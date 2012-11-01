@@ -22,9 +22,9 @@ class TBImportExternalDatabase extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
-		$this->mDescription = '...';
-		$this->addOption( 'namespace', '.', true, true );
-		$this->addOption( 'notes', '.', true, true );
+		$this->mDescription = 'Adds hidden notes only shown to experts';
+		$this->addOption( 'namespace', 'Working group namespace', true, true );
+		$this->addOption( 'notes', 'File containing the notes', true, true );
 
 	}
 
@@ -33,8 +33,8 @@ class TBImportExternalDatabase extends Maintenance {
 		
 		global $wgContLang;
 		$namespaceId = $wgContLang->getNsIndex( $namespace );
-		if ( $namespaceId == false) {
-				echo "Ei nimiavaruuden nimikoodia";
+		if ( $namespaceId === false ) {
+				echo "EIN3: Unknown namespace: $namespace\n";
 				die();
 			}
 
@@ -50,21 +50,17 @@ class TBImportExternalDatabase extends Maintenance {
 			$note = str_replace( '\n', "\n", $note);
 			$title = Title::makeTitle( $namespaceId, $käsite );
 			if ( !$title ) {
-				echo "Invalid title for {$käsite['käsite']}\n";
+				echo "EIN1: Invalid title for {$käsite['käsite']}\n";
 				continue;
 			}
-			if (!$title -> exists()) {
-				echo "Ei sivua: $title";
+			if ( !$title->exists() ) {
+				$name = $title->getPrefixedText();
+				echo "EIN2: Page does not exists: $name\n";
 				continue;
 			}
 
 			$this->insert( $title, $note );
-
 		}
-
-
-
-
 	}
 
 	protected function parseCSV( $filename, $uniq = 0 ) {

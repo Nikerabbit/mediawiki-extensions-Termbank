@@ -1,0 +1,56 @@
+/**
+ * Only works against vector skin
+ * @author Niklas Laxström, 2012
+ */
+
+body {
+	background-image: url(termipankki_gradient.png);
+	background-repeat: repeat-x;
+}
+
+.sitelogo {
+	/* @embed */
+	background-image: url(termipankki_tunnus.png);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 659px;
+	height: 240px;
+	margin: 0px;
+	padding: 0px;
+	z-index: -1;
+}
+
+#mw-page-base {
+	height: 160px;
+	background: none;
+}
+
+#mw-head-base {
+	margin-top: -160px;
+	height: 160px;
+}
+
+#left-navigation {
+	top: 120px;
+}
+
+#right-navigation {
+	margin-top: 120px;
+}
+
+div.vectorTabs {
+	height: 40px;
+}
+
+div#mw-head div.vectorMenu h5 {
+	margin-top: -1px;
+}
+
+div#content .printfooter {
+	display: none;
+}
+
+div.vectorTabs ul {
+	font-family: Georgia;
+}
