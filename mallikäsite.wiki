@@ -1,0 +1,75 @@
+{{Käsite
+|lähteet=BS2001, FN2004, SLT2006
+|tarkistettu=N
+|lisätiedot=lat. ''habitare'' = asua
+|luokka=Kasviekologia
+|lähdeaineistotunnus=1984
+|käsite=kasvupaikka
+|lähdeaineisto=Kaarina_iso
+}}
+{{Liittyvä nimitys
+|kieli=suomi
+|nimitys=Nimitys:kasvupaikka
+}}
+{{Liittyvä nimitys
+|kieli=suomi
+|nimitys=Nimitys:habitaatti
+}}
+{{Liittyvä nimitys
+|kieli=suomi
+|nimitys=Nimitys:paikka
+}}
+{{Liittyvä nimitys
+|kieli=norja
+|nimitys=Nimitys:habitat
+}}
+{{Liittyvä nimitys
+|kieli=englanti
+|nimitys=Nimitys:site
+}}
+{{Liittyvä nimitys
+|kieli=ruotsi
+|nimitys=Nimitys:ståndort
+}}
+{{Liittyvä nimitys
+|kieli=ruotsi
+|nimitys=Nimitys:växtmiljö
+}}
+{{Liittyvä nimitys
+|kieli=ruotsi
+|nimitys=Nimitys:växtplats
+}}
+{{Liittyvä nimitys
+|kieli=islanti
+|nimitys=Nimitys:vaxtarstaður
+|käyttöhuomautus=(búsvæði, vist)
+}}
+{{Liittyvä nimitys
+|kieli=fääri
+|nimitys=Nimitys:vakstrarstaður
+}}
+{{Liittyvä nimitys
+|kieli=fääri
+|nimitys=Nimitys:bóøki
+}}
+{{Liittyvä nimitys
+|kieli=fääri
+|nimitys=Nimitys:lívøki
+}}
+{{Liittyvä nimitys
+|kieli=norja
+|nimitys=Nimitys:voksested
+}}
+{{Liittyvä nimitys
+|kieli=tanska
+|nimitys=Nimitys:biotop
+}}
+{{Lähikäsite
+|käsite=Kasvitiede:biotooppi
+}}
+{{Lähikäsite
+|käsite=Kasvitiede:mikrohabitaatti
+}}
+{{Lähikäsite
+|käsite=Kasvitiede:makrohabitaatti
+}}

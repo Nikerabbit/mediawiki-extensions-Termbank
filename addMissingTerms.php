@@ -44,7 +44,7 @@ class TBImportExternalDatabase extends Maintenance {
 
 		############ Käsitesivut
 		foreach ( $concept as $name => $expressions ) {
-			$title = Title::makeTitle( NS_KASVITIEDE, $name );
+			$title = Title::makeTitle( NS_MIKROBIOLOGIA, $name );
 			if ( !$title->exists() ) {
 				echo $title->getPrefixedText() . " doesn't exist\n";
 			}
@@ -104,7 +104,7 @@ class TBImportExternalDatabase extends Maintenance {
 			}
 
 			$exp = array_filter( $exp );
-			$exp['lähdeaineisto'] = 'Kaarina_iso';
+			$exp['lähdeaineisto'] = 'MikroMBS20-12';
 
 			$parsed[] = array(
 				'name' => 'Nimitys',

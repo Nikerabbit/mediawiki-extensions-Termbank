@@ -1,18 +1,11 @@
 <?php
-/**
- * Aliases for special pages of Translate extension.
- *
- * @file
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
- */
-
-$specialPageAliases = array();
+$specialPageAliases = [];
 
 /** English (English) */
 $specialPageAliases['en'] = array(
-	'PrivateData' => array( 'PrivateData' ),
+	'PrivateData' => [ 'PrivateData' ],
 );
 
 $specialPageAliases['fi'] = array(
-	'PrivateData' => array( 'Yksityiset tiedot' ),
+	'PrivateData' => [ 'Yksityiset tiedot' ],
 );

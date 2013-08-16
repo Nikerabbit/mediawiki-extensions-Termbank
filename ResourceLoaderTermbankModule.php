@@ -4,7 +4,6 @@
  * Both need some CSS to support the feature.
  *
  * @author Niklas Laxstrom
- * @copyright Copyright © 2012, Niklas Laxström
  * @license Public domain
  * @file
  */
@@ -37,7 +36,6 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 	 * @return array
 	 */
 	public function getStyles( ResourceLoaderContext $context ) {
-
 		global $wgExtraNamespaces, $wgTermbankColors;
 		$output = "\n/* Mui sinulle. */\n";
 		$fields = array();

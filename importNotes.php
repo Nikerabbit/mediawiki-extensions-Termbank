@@ -16,28 +16,22 @@ if ( getenv( 'MW_INSTALL_PATH' ) !== false ) {
 }
 require_once( "$IP/maintenance/Maintenance.php" );
 
-const SEPARATOR = '%';
+const SEPARATOR = '\t';
 
 class TBImportExternalDatabase extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
 		$this->mDescription = 'Adds hidden notes only shown to experts';
-		$this->addOption( 'namespace', 'Working group namespace', true, true );
+		
 		$this->addOption( 'notes', 'File containing the notes', true, true );
 
 	}
 
 	public function execute() {
-		$namespace = $this->getOption( 'namespace' );
+		
 		
 		global $wgContLang;
-		$namespaceId = $wgContLang->getNsIndex( $namespace );
-		if ( $namespaceId === false ) {
-				echo "EIN3: Unknown namespace: $namespace\n";
-				die();
-			}
-
 		$notes = $this->parseCSV( $this->getOption( 'notes' ), 1 );
 
 		foreach ( $notes as $i => $fields ) {
@@ -45,7 +39,13 @@ class TBImportExternalDatabase extends Maintenance {
 			if ( !$käsite ) {
 				continue;
 			}
-		
+			$namespace = $fields['alue'];		
+			$namespaceId = $wgContLang->getNsIndex( $namespace );
+			if ( $namespaceId === false ) {
+				echo "EIN3: Unknown namespace: $namespace\n";
+				
+			}
+			else {
 			$note = $fields['teksti'];
 			$note = str_replace( '\n', "\n", $note);
 			$title = Title::makeTitle( $namespaceId, $käsite );
@@ -53,13 +53,15 @@ class TBImportExternalDatabase extends Maintenance {
 				echo "EIN1: Invalid title for {$käsite['käsite']}\n";
 				continue;
 			}
-			if ( !$title->exists() ) {
+			else if ( !$title->exists() ) {
 				$name = $title->getPrefixedText();
 				echo "EIN2: Page does not exists: $name\n";
 				continue;
 			}
-
+			else {
 			$this->insert( $title, $note );
+			}
+			}
 		}
 	}
 
@@ -68,23 +70,47 @@ class TBImportExternalDatabase extends Maintenance {
 		$rows = str_getcsv( $data, "\n" );
 
 		$headerRow = array_shift( $rows );
-		$headers = str_getcsv( $headerRow, SEPARATOR );
+		$headers = str_getcsv( $headerRow, "\t" );
 
 		$output = array();
+		
+		foreach ($rows as $row ) {
+			
+		$outputrow = str_getcsv( $row, "\t" );
+		$rowcount = count($outputrow);
+		$concept = $outputrow[1];
+		if ($rowcount != 3 ) echo "$concept\n";
+		$output[] = array_combine( $headers, $outputrow );
+
+		}		
+
+		/*
 		foreach ( $rows as $row ) {
 			$values = str_getcsv( $row, SEPARATOR );
+			
+			$contents = $values;
+			$content = $values[1];
+			unset($contents[0]);
+			unset($contents[1]);
+			
 
-			if ( count( $values ) !== count( $headers ) ) {
-				echo "Apua2\n";
-				var_dump( $headers, $values ); die();
+			foreach ($contents as $element) {
+			
+			$content = $content+'%'+$element;
+
 			}
+
+			$result[0] = $values[0];
+			$result[1] = $content;
 
 			if ( is_int($uniq) ) {
-				$output[$values[$uniq]] = array_combine( $headers, $values );
+				//echo '$uniq:'+$uniq;				
+				$output[$values[$uniq]] = array_combine( $headers, $result );
 			} else {
-				$output[] = array_combine( $headers, $values );
+				$output[] = array_combine( $headers, $result );
 			}
 		}
+		*/	
 		return $output;
 	}
 

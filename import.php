@@ -19,108 +19,163 @@ require_once( "$IP/maintenance/Maintenance.php" );
 const SEPARATOR = '%';
 const NIMIAVARUUS = 'Kielitiede';
 
+const CONCEPT_TEMPLATE		= 'Käsite';
+const EXPRESSION_TEMPLATE	= 'Nimitys';
+const REF_EXPRESSION_TEMPLATE	= 'Liittyvä nimitys';
+const RELATED_CONCEPT_TEMPLATE	= 'Lähikäsite';
+const _REF_EXPRESSION_TEMPLATE	= '_Liittyvä nimitys';
+const _RELATED_CONCEPT_TEMPLATE	= '_Lähikäsite';
+
+const IMPORTING_USER = "Aineiston tuonti";
+
+const CONCEPT_FIELD	= 'käsite';
+const EXPRESSION_FIELD	= 'nimitys';
+
+const SOURCE = 'lähdeaineisto';
+
+const LANGUAGE	  = 'kieli';
+const EQUIVALENCE = 'käännösvastaavuus';
+const STATUS      = 'käyttösuositus';
+const ORIGIN      = 'alkuperä';
+const NOTE        = 'käyttöhuomautus';
+const ETYMOLOGY   = 'etymologia';
+
+const RELATED_CONCEPT = 'lähikäsite';
+const RELATION        = 'käsitesuhde';
+
 class TBImportExternalDatabase extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
 		$this->mDescription = '...';
-		$this->addOption( 'expressions', '.', true, true );
-		$this->addOption( 'concepts', ',', true, true );
-		$this->addOption( 'relations', '-', true, true );
+		$this->addOption( 'filecode', '.', true, true );
 		$this->addOption( 'namespace', '.', true, true );
 		$this->addOption( 'source', '.', true, true );
+		$this->addOption( 'overwrite', '.', true, true );
+		$this->addOption( 'checked', '.', true, true );
 	}
 
 	public function execute() {
 
+		$overwrite = $this->getOption( 'overwrite' );
 		$namespace = $this->getOption( 'namespace' );
+		$checked = $this->getOption( 'checked' );
 
 		$source = $this->getOption( 'source' );
 		global $wgContLang;
 		$namespaceId = $wgContLang->getNsIndex( $namespace );
+		
 		if ( $namespaceId == false) {
-				echo "Ei nimiavaruuden nimikoodia";
+				echo "Namespace has no id";
 				die();
 			}
+		
+		if ( $this->getOption( 'checked' ) === 'y' OR $this->getOption( 'checked' ) === 'n') {
+				$checked == $this->getOption( 'checked' );
+		}
+		else {
+				echo "Invalid value in checked (y/n)";
+				die();
+		}
+		
+		if ( $this->getOption( 'overwrite' ) === 'y' OR $this->getOption( 'overwrite' ) === 'n') {
+				$overwrite == $this->getOption( 'overwrite' );
+		}
+		else {
+				echo "Invalid value in overwrite (y/n)";
+				die();
+		}	
+		
+		
+		$confile = $this->getOption( 'filecode' );
+		$confile .= "_con.csv";
+		$expfile = $this->getOption( 'filecode' );
+		$expfile .= "_exp.csv";
+		$relfile = $this->getOption( 'filecode' );
+		$relfile .= "_rel.csv";
+		
+		echo "$confile, $expfile, $relfile";
 
-		$concepts = $this->parseCSV( $this->getOption( 'concepts' ), 1 );
-		$expressions = $this->parseCSV( $this->getOption( 'expressions' ), false );
-		$relations = $this->parseCSV( $this->getOption( 'relations' ), false );
+		$concepts = $this->parseCSV( $confile, 1 );
+		$expressions = $this->parseCSV( $expfile, false );
+		$relations = $this->parseCSV( $relfile, false );
 
 		foreach ( $expressions as $fields ) {
-			$käsite = $fields['käsite'];
-			if ( !$käsite ) {
+			$concept = $fields[CONCEPT_FIELD];
+			if ( !$concept ) {
 				continue;
 			}
-			$liittyvä = array(
-				'nimitys' => 'Nimitys:' . $fields['nimitys'],
-				'kieli'   => $fields['kieli'],
-				'käännösvastaavuus' => $fields['käännösvastaavuus'],
-				'käyttösuositus' => $fields['käyttösuositus'],
-				'alkuperä' => $fields['alkuperä']
+			$referring = array(
+				EXPRESSION_FIELD => $fields[EXPRESSION_FIELD],
+				LANGUAGE   => $fields[LANGUAGE],
+				EQUIVALENCE => $fields[EQUIVALENCE],
+				STATUS => $fields[STATUS],
+				ORIGIN => $fields[ORIGIN],
+				NOTE => $fields[NOTE]
 			);
 
-			$liittyvä = array_filter( $liittyvä );
-			if ( !isset( $concepts[$käsite] ) ) {
-				echo "Nimitys viittaa tuntemattomaan käsitteeseen: $käsite\n";
+			$referring = array_filter( $referring );
+			if ( !isset( $concepts[$concept] ) ) {
+				echo "Expression refers to an unidentified concept: $concept\n";
 			}
-			$concepts[$käsite]['_Liittyvä nimitys'][] = $liittyvä;
+			
+			$concepts[$concept][_REF_EXPRESSION_TEMPLATE][] = $referring;
 		}
 
 		foreach ( $relations as $fields ) {
-			$subject = $fields['käsite'];
-			$liittyvä = array(
-				'käsite' => "$namespace:" . $fields['lähikäsite'],
-				'käsitesuhde'   => $fields['käsitesuhde'],
+			$subject = $fields[CONCEPT_FIELD];
+			$referring = array(
+				CONCEPT_FIELD => $fields[RELATED_CONCEPT],
+				RELATION   => $fields[RELATION],
 			);
 
-			$liittyvä = array_filter( $liittyvä );
+			$referring = array_filter( $referring );
 			if ( isset( $concepts[$subject] ) ) {
-				$concepts[$subject]['_Lähikäsite'][] = $liittyvä;
+				$concepts[$subject][_RELATED_CONCEPT][] = $referring;
 			}
 		}
 
 		foreach ( $expressions as $i => $fields ) {
-			unset( $fields['käsite'] );
-			unset( $fields['etymologia'] );
-			unset( $fields['käännösvastaavuus'] );
-			unset( $fields['käyttösuositus'] );
+			unset( $fields[CONCEPT_FIELD] );
+			unset( $fields[ETYMOLOGY] );
+			unset( $fields[EQUIVALENCE] );
+			unset( $fields[NOTE] );
 			$expressions[$i] = array_filter( $fields );
 		}
 
 		foreach ( $concepts as $i => $concept ) {
 			unset( $concept['-'] );
 			if ( !isset( $concept['lähteet'] ) ) { echo "Apua1\n"; var_dump( $i, $concept ); die(); }
-			$lähteet = array_map( 'trim', explode( ',', $concept['lähteet'] ) );
-			$lähteet = array_flip( $lähteet );
-			unset( $lähteet['Väre'] );
-			unset( $lähteet['Piirainen'] );
-			ksort( $lähteet );
-			$concept['lähteet'] = implode( ', ', array_keys( $lähteet ) );
+			$lahteet = array_map( 'trim', explode( ',', $concept['lähteet'] ) );
+			$lahteet = array_flip( $lahteet );
+			unset( $lahteet['Väre'] );
+			unset( $lahteet['Piirainen'] );
+			ksort( $lahteet );
+			$concept['lähteet'] = implode( ', ', array_keys( $lahteet ) );
 			$concept = array_filter( $concept );
 			$concepts[$i] = $concept;
 		}
 
 		foreach ( $concepts as $concept ) {
-			if ( !isset( $concept['käsite'] ) ) continue;
-			$title = Title::makeTitleSafe( $namespaceId, $concept['käsite'] );
+			if ( !isset( $concept[CONCEPT_FIELD] ) ) continue;
+			$title = Title::makeTitleSafe( $namespaceId, $concept[CONCEPT_FIELD] );
 			if ( !$title ) {
-				echo "Invalid title for {$concept['käsite']}\n";
+				echo "Invalid title for $concept[CONCEPT_FIELD]\n";
 				continue;
 			}
-			$concept['lähdeaineisto'] = $source;
-			$this->insert( $title, 'Käsite', $concept, $namespace );
+			$concept[SOURCE] = $source;
+			$this->insert( $title, CONCEPT_TEMPLATE, $concept, $namespace, $overwrite, $checked );
 		}
 
 		foreach ( $expressions as $exp ) {
-			if ( !isset( $exp['nimitys'] ) ) continue;
-			$title = Title::makeTitleSafe( NS_NIMITYS, $exp['nimitys'] );
+			if ( !isset( $exp[EXPRESSION_FIELD] ) ) continue;
+			$title = Title::makeTitleSafe( NS_NIMITYS, $exp[EXPRESSION_FIELD] );
 			if ( !$title ) {
 				echo "Invalid title for {$exp['nimitys']}\n";
 				continue;
 			}
-			$exp['lähdeaineisto'] = $source;
-			$this->insert( $title, 'Nimitys', $exp, $namespace );
+			$exp[SOURCE] = $source;
+			$this->insert( $title, EXPRESSION_TEMPLATE, $exp, $namespace, $overwrite, $checked );
 		}
 	}
 
@@ -136,7 +191,7 @@ class TBImportExternalDatabase extends Maintenance {
 			$values = str_getcsv( $row, SEPARATOR );
 
 			if ( count( $values ) !== count( $headers ) ) {
-				echo "Apua2\n";
+				echo "Row length not matching to headers\n";
 				var_dump( $headers, $values ); die();
 			}
 
@@ -149,8 +204,10 @@ class TBImportExternalDatabase extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $mainTemplate, $fields, $namespace ) {
+	protected function insert( Title $title, $mainTemplate, $fields, $namespace, $overwrite, $checked ) {
 		$content = "{{" . "$mainTemplate\n";
+		if ( $mainTemplate === CONCEPT_TEMPLATE ) $content .= "|tarkistettu=$checked\n";
+		
 		foreach ( $fields as $key => $value ) {
 			if ( $key[0] === '_' ) continue;
 			$value = preg_replace( '/\[([^\]]+?)\|([^\]]+?)\]/', "[[$namespace:$1|$2]]", $value );
@@ -164,6 +221,7 @@ class TBImportExternalDatabase extends Maintenance {
 			$key = ltrim( $key, '_' );
 			foreach ( $value as $subitem ) {
 				$content .= "{{" . "$key\n";
+				if ($key == 'Liittyvä nimitys' ) $content .= "|otsikossa=Y\n";
 				foreach ( $subitem as $subkey => $subvalue ) {
 					$content .= "|$subkey=$subvalue\n";
 				}
@@ -171,11 +229,25 @@ class TBImportExternalDatabase extends Maintenance {
 			}
 		}
 
-		$user = User::newFromName( 'Aineiston tuonti', false );
+		$user = User::newFromName( IMPORTING_USER, false );
 		$page = new WikiPage( $title );
-		$page->doEdit( $content, 'Aineiston tuonti', 0, false, $user );
-	}
-
+		echo "Importing $title";
+		
+		if ($page->exists() == true) {
+		echo " --> Wiki already has page: $title";
+			if ($overwrite == 'y' ) {
+				echo " --> Replacing\n$content\n";
+				$page->doEdit( $content, IMPORTING_USER, 0, false, $user );		
+			}
+			if ($overwrite == 'n' ) {
+				echo " --> Not replaced\n";
+			}
+		}
+		else {
+			echo "-->Saved\n";
+			$page->doEdit( $content, IMPORTING_USER, 0, false, $user );	
+		}	
+}
 }
 
 $maintClass = 'TBImportExternalDatabase';

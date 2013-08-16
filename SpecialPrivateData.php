@@ -4,20 +4,16 @@
  *
  * @file
  * @author Niklas Laxström
- * @copyright Copyright © 2011 Niklas Laxström
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
  */
 
-/**
- * ...
- *
- * @ingroup SpecialPage
- */
-class SpecialPrivateData extends UnlistedSpecialPage {
-
+class SpecialPrivateData extends SpecialPage {
 	function __construct() {
 		parent::__construct( 'PrivateData' );
-		
+	}
+
+	public function isListed() {
+		return false;
 	}
 
 	public function execute( $parameters ) {
@@ -55,26 +51,24 @@ class SpecialPrivateData extends UnlistedSpecialPage {
 		$db = wfGetDB( DB_SLAVE );
 		$table = 'privatedata';
 		$fields = 'pd_text';
-		$conds = array( 'pd_page' => $title->getArticleId() );
+		$conds = [ 'pd_page' => $title->getArticleId() ];
 		$res = $db->selectRow( $table, $fields, $conds, __METHOD__ );
 		if ( $res ) {
-			$msg = wfMessage( 'termbank-privatedata-note' )->parse();
+			$msg = $this->msg( 'termbank-privatedata-note' )->parse();
 			$text = "<em>$msg</em><hr />";
-			$text .= self::convertWhiteSpaceToHTML( $res -> pd_text );
-						
+			$text .= self::convertWhiteSpaceToHTML( $res->pd_text );
 			echo Html::rawElement( 'div', array( 'class' => 'ttp-privatedata' ), $text );
 		}
 		return;
 	}
-public static function convertWhiteSpaceToHTML( $msg ) {
 
-$msg = htmlspecialchars( $msg );
-$msg = preg_replace( '/^ /m', '&#160;', $msg );
-$msg = preg_replace( '/ $/m', '&#160;', $msg );
-$msg = preg_replace( '/ /',  '&#160; ', $msg );
-$msg = str_replace( "\n", '<br />', $msg );
+	public static function convertWhiteSpaceToHTML( $msg ) {
+		$msg = htmlspecialchars( $msg );
+		$msg = preg_replace( '/^ /m', '&#160;', $msg );
+		$msg = preg_replace( '/ $/m', '&#160;', $msg );
+		$msg = preg_replace( '/ /',  '&#160; ', $msg );
+		$msg = str_replace( "\n", '<br />', $msg );
 
-return $msg;
-
-}
+		return $msg;
+	}
 }
