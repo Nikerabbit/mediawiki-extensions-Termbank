@@ -22,32 +22,24 @@ const GENUS = 4;
 const ORIGIN = 5;
 
 class ExpressionPage {
-	
-	static function listConcepts( $input, $args, $parser, $frame ) {
-
-
+	public static function listConcepts( $input, $args, $parser, $frame ) {
 		$input = $parser->recursiveTagParse($input, $frame);
 
 		$expression = $input;
-		//echo $expression;
 		$expressiontitle = Title::newFromText( $expression );
 
 		$store = smwfGetStore();
-		
-		$tag = "Nimitys";
-	
-		$expressionproperty = SMWDIProperty::newFromUserLabel( $tag );
+		$expressionproperty = SMWDIProperty::newFromUserLabel( 'Nimitys' );
 
-		$return = "";		
+		$return = '';
 
-    if ($expressiontitle === null) {
-      return "Ei tuloksia.";
-    }
+		if ( $expressiontitle === null ) {
+			return "Ei tuloksia.";
+		}
 
 		$expressionpage = SMWDIWikiPage::newFromTitle($expressiontitle);
 
 		$values = $store->getPropertyValues( $expressionpage, $expressionproperty );
-
 		$pages = $store->getPropertySubjects( $expressionproperty, $expressionpage );
 
 // getPropertySubjects palauttaa myös SIO:t
@@ -69,20 +61,13 @@ class ExpressionPage {
 			//$pagenameaslist = explode( ":", $fullpagename );			
 			//$pagename = $pagenameaslist[1];
 			if ( $namespace === "Nimitys" ) {
-
 				$expressionsubs[] = $page;			
-			
-			}
-			else {
-			
+			} else {
 				$hits[] = $namespace.":".$pagename;
-
-
 			}
-		
 		}
 
-		$readmore = '<span>Lue koko artikkeli <img src="http://tieteentermipankki.fi/mediawiki/images/favicon.png"></img></span>';
+		$readmore = '<span>Lue koko artikkeli <img src="/favicon.png"></img></span>';
 
 		$singled = array_unique( $hits );
 		global $wgTermbankColors;
@@ -94,22 +79,21 @@ class ExpressionPage {
 			$definitionvalues = $store->getPropertyValues( $page, $definitionproperty );
 			$definitionlangvalues = $store->getPropertyValues( $page, $definitionlangproperty );
 			$definition = "";
-			if (count( $definitionvalues )	> 0 ) {		
+			if ( count( $definitionvalues ) > 0 ) {
 				$definition = $definitionvalues[0]->getString()."<br/>";
 				$definition = preg_replace( "/\[\[[^\|]*\|/", "", $definition );
 				$definition = preg_replace( "/\]\]/", "", $definition );
 				$definition = preg_replace("/<ref.*<\/ref>/", "", $definition);
 				
 			}
-			
-			if (count( $definitionlangvalues )	> 0 ) {		
+
+			if ( count( $definitionlangvalues ) > 0 ) {
 				$definition .= $definitionlangvalues[0]->getString()."<br/>";
 				$definition = preg_replace( "/\[\[[^\|]*\|/", "", $definition );
 				$definition = preg_replace( "/\]\]/", "", $definition );
 				$definition = preg_replace("/<ref.*<\/ref>/", "", $definition);
 			}
 			
-						
 			$pagenamearray = explode(":", $hit);
 			$pagename = $pagenamearray[1];
 			$namespace = $pagenamearray[0];
@@ -125,7 +109,6 @@ class ExpressionPage {
 		$subtables = array();
 
 		foreach ( $expressionsubs as $sub ) {
-
 			$langproperty = SMWDIProperty::newFromUserLabel( "Kieli" );
 			$genproperty = SMWDIProperty::newFromUserLabel( "Suku" );
 			$posproperty = SMWDIProperty::newFromUserLabel( "Sanaluokka" );
@@ -140,7 +123,7 @@ class ExpressionPage {
 			$der = $store->getPropertyValues( $sub, $derproperty );
 			$orig = $store->getPropertyValues( $sub, $origproperty );
 			
-			$table = array();
+			$table = [];
 /*
 			$table[LANGUAGE] = ExpressionPage::valueArrayToString( $langs );
 			$table[POS] = ExpressionPage::valueArrayToString( $pos );
@@ -156,56 +139,38 @@ class ExpressionPage {
 			$table[GENUS] = implode( $gens );
 			$table[ORIGIN] = implode( $orig );
 
-
-		
 			$subtables[] = $table;
 
 		}
-		$origproperty = SMWDIProperty::newFromUserLabel( "Alkuperä" );
-		$orig = $store->getPropertyValues( $sub, $origproperty );
-		$orig = implode($orig);
-		$names = array( "Kieli", "Sanaluokka", "Termityyppi", "Johdostyyppi", "Suku", "Alkuperä" );
+
+		$names = [ "Kieli", "Sanaluokka", "Termityyppi", "Johdostyyppi", "Suku", "Alkuperä" ];
 
 		$return .= '<table class="wikitable">';
 		foreach ( range( 0, 5 ) as $index) {
-
 			$return .= '<tr><th>'.$names[$index].'</th>';
 
 			foreach ( $subtables as $table ) {
-
 				$return .= '<td>'.$table[$index].'</td>';
-
 			}
 
 			$return .= '</tr>';
-			
 		}
 		
 		$return .= "</table></div>";
 
-	return $return;
+		return $return;
 	}
 
 	static function valueArrayToString( $blob ) {
+		$return = "";
+		if ( count( $blob ) === 0 || !is_object($blob) ) {
+			return "";
+		} elseif ( $blob[0]->getDIType() === 2 ) {
+			$return = $blob[0];
+		} elseif ( $blob[0]->getDIType() === 9 ) {
+			$return = $blob[0]->getTitle()->getBaseText();
+		}
 
-	$return = "";
-	if ( count( $blob ) === 0 || !is_object($blob) ) {return "";}
-	elseif ( $blob[0]->getDIType() === 2 ) {
-		
-		$return = $blob[0];
-
+		return $return;
 	}
-
-	elseif ( $blob[0]->getDIType() === 9 ) {
-
-		$return = $blob[0]->getTitle()->getBaseText();
-
-	}
-	
-
-	return $return;
-
-	}
-
-
 }
