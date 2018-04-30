@@ -16,15 +16,6 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 	protected $origin = self::ORIGIN_CORE_SITEWIDE;
 
 	/**
-	 * @param $context ResourceLoaderContext
-	 * @return array|int|Mixed
-	 */
-	public function getModifiedTime( ResourceLoaderContext $context ) {
-		global $wgCacheEpoch;
-		return $wgCacheEpoch;
-	}
-
-	/**
 	 * Load at top to avoid flash of the page.
 	 */
 	public function getPosition() {
