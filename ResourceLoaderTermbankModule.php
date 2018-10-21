@@ -39,12 +39,20 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 			
 			if ( isset( $wgTermbankColors[$name] ) ) {
 				$color = $wgTermbankColors[$name];
-				$output .= "a$s, a[title=$name], $s h1, $s #firstHeading { color: $color; }\n";
+				$output .= <<<CSS
+a$s,
+a[title=$name],
+$s h1,
+.page-$name #firstHeading,
+$s #firstHeading { color: $color; }
+
+CSS;
 			}
 		}
 
 		$output .= ".areafield { display: none; }\n";
-		$output .= implode( ', ', $fields ) . " { display: table-row; }\n";
+		# Display working group specific fields per namespace
+		$output .= implode( ",\n", $fields ) . " { display: table-row; }\n";
 		return array( 'all' => $output );
 
 	}
