@@ -3,7 +3,3 @@
 body[class*="page-Termipankki_Etusivu"] #firstHeading {
 	display: none;
 }
-
-#mw-content-text {
-	max-width: 1000px;
-}

@@ -46,6 +46,8 @@ $s h1,
 .page-$name #firstHeading,
 $s #firstHeading { color: $color; }
 
+.aihealuelista a[title=$name] { color: $color !important; }
+
 CSS;
 			}
 		}
