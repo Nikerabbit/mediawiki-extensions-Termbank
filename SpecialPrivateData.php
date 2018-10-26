@@ -45,8 +45,6 @@ class SpecialPrivateData extends SpecialPage {
 				}
 			}
 		}
-		
-		ob_end_clean(); // Avoid warnings here
 
 		$db = wfGetDB( DB_SLAVE );
 		$table = 'privatedata';
