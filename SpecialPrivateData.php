@@ -4,8 +4,10 @@
  *
  * @file
  * @author Niklas Laxström
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
+ * @license GPL-2.0-or-later
  */
+
+use MediaWiki\MediaWikiServices;
 
 class SpecialPrivateData extends SpecialPage {
 	function __construct() {
@@ -34,8 +36,16 @@ class SpecialPrivateData extends SpecialPage {
 		$namespace = $title->getNamespace();
 		$user = $this->getUser();
 
-		if ( !$title->userCan( 'edit' ) ) {
-			return;
+		$services = MediaWikiServices::getInstance();
+		if ( is_callable( [ $services, 'getPermissionManager' ] ) ) {
+			if ( !$services->getPermissionManager()->userCan( 'edit', $user, $title ) ) {
+				return;
+			}
+		} else {
+			// BC <1.33
+			if ( !$title->userCan( 'edit' ) ) {
+				return;
+			}
 		}
 
 		if ( isset( $wgNamespaceProtection[$namespace] ) ) {
