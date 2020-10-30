@@ -1,17 +1,17 @@
 {
 	"name": "Termbank",
-	"version": "2017-11-08",
+	"version": "2020-10-30",
 	"author": "Niklas Laxström",
 	"url": "https://tieteentermipankki.fi",
 	"descriptionmsg": "termbank-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"Hooks": {
-		"LoadExtensionSchemaUpdates": "TermbankHooks::onLoadExtensionSchemaUpdates",
-		"LinkBegin": "TermbankHooks::onLinkBegin",
-		"BeforePageDisplay": "TermbankHooks::onBeforePageDisplay",
-		"ParserFirstCallInit": "TermbankHooks::onParserFirstCallInit",
-		"OutputPageBodyAttributes": "TermbankHooks::onOutputPageBodyAttributes"
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\Termbank\\Hooks::onLoadExtensionSchemaUpdates",
+		"LinkBegin": "MediaWiki\\Extensions\\Termbank\\Hooks::onLinkBegin",
+		"BeforePageDisplay": "MediaWiki\\Extensions\\Termbank\\Hooks::onBeforePageDisplay",
+		"ParserBeforeInternalParse": "MediaWiki\\Extensions\\Termbank\\Hooks::onParserBeforeInternalParse",
+		"OutputPageBodyAttributes": "MediaWiki\\Extensions\\Termbank\\Hooks::onOutputPageBodyAttributes"
 	},
 	"MessagesDirs": {
 		"Termbank": [
@@ -21,16 +21,11 @@
 	"MessagesFiles": {
 		"Termbank-alias": "Termbank.alias.php"
 	},
-	"AutoloadClasses": {
-		"ExpressionPage": "ExpressionPage.php",
-		"MixedNamespaceSearchSuggestionsHooks": "MixedNamespaceSearchSuggestionsHooks.php",
-		"ResourceLoaderTermbankModule": "ResourceLoaderTermbankModule.php",
-		"SpecialPrivateData": "SpecialPrivateData.php",
-		"TemplateParser": "TemplateParser.php",
-		"TermbankHooks": "TermbankHooks.php"
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extensions\\Termbank\\": "src/"
 	},
 	"SpecialPages": {
-		"PrivateData": "SpecialPrivateData"
+		"PrivateData": "MediaWiki\\Extensions\\Termbank\\SpecialPrivateData"
 	},
 	"ResourceModules": {
 		"ext.termbank": {
@@ -45,7 +40,7 @@
 			"dependencies": "mediawiki.util"
 		},
 		"ext.termbank.workgroups": {
-			"class": "ResourceLoaderTermbankModule"
+			"class": "MediaWiki\\Extensions\\Termbank\\ResourceLoaderTermbankModule"
 		}
 	},
 	"ResourceFileModulePaths": {

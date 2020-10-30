@@ -1,5 +1,5 @@
 .ttp-termpage #firstHeading,
 .ttp-termpage #contentSub,
-body[class*="page-Termipankki_Etusivu"] #firstHeading {
+body[ class*='page-Termipankki_Etusivu' ] #firstHeading {
 	display: none;
 }

@@ -2,10 +2,10 @@
 
 /* Only works with Vector */
 body {
-	background-image: url(termipankki_gradient.png);
+	background-image: url( termipankki_gradient.png );
 	background-repeat: repeat-x;
 
-	&::before {
+	&:before {
 		background-image: url( termipankki_tunnus.svg );
 		position: absolute;
 		width: 659px;
@@ -14,10 +14,9 @@ body {
 		content: '';
 		background-repeat: no-repeat;
 		background-size: 659px auto;
-
 	}
 
-	&.page-Toiminnot_Badtitle_dummy_title_for_API_calls_set_in_api_php::before {
+	&.page-Toiminnot_Badtitle_dummy_title_for_API_calls_set_in_api_php:before {
 		display: none;
 	}
 
@@ -42,6 +41,6 @@ body {
 	}
 
 	div.vectorTabs ul {
-		font-family: Georgia;
+		font-family: 'Georgia', serif;
 	}
 }

@@ -1,4 +1,9 @@
 {
+	"@metadata": {
+		"authors": [
+			"Niklas Laxström"
+		]
+	},
 	"termbank-desc": "Termipankin tarvitsevat lisäominaisuudet",
 	"termbank-privatedata-note": "Nämä tiedot näkyvät vain asiantuntijoille"
 }

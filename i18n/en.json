@@ -1,4 +1,9 @@
 {
+	"@metadata": {
+		"authors": [
+			"Niklas Laxström"
+		]
+	},
 	"termbank-desc": "Extra facilitites needed by termbank",
 	"termbank-privatedata-note": "This information is only visible to experts"
 }

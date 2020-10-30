@@ -2,10 +2,10 @@
 $specialPageAliases = [];
 
 /** English (English) */
-$specialPageAliases['en'] = array(
+$specialPageAliases['en'] = [
 	'PrivateData' => [ 'PrivateData' ],
-);
+];
 
-$specialPageAliases['fi'] = array(
-	'PrivateData' => [ 'Yksityiset tiedot' ],
-);
+$specialPageAliases['fi'] = [
+	'PrivateData' => [ 'Yksityiset_tiedot' ],
+];

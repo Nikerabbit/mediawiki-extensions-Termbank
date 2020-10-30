@@ -4,39 +4,32 @@
  * Both need some CSS to support the feature.
  *
  * @author Niklas Laxstrom
- * @license Public domain
+ * @license GPL-2.0-or-later
  * @file
  */
+
+namespace MediaWiki\Extensions\Termbank;
+
+use ResourceLoaderContext;
+use ResourceLoaderModule;
 
 /**
  * Generates CSS dynamically for defined working groups.
  */
 class ResourceLoaderTermbankModule extends ResourceLoaderModule {
-	/// Same for all users.
-	protected $origin = self::ORIGIN_CORE_SITEWIDE;
-
-	/**
-	 * Load at top to avoid flash of the page.
-	 */
-	public function getPosition() {
-		return 'top';
-	}
-	
-	/**
-	 * @param $context ResourceLoaderContext
-	 * @return array
-	 */
-	public function getStyles( ResourceLoaderContext $context ) {
+	public function getStyles( ResourceLoaderContext $context ): array {
 		global $wgExtraNamespaces, $wgTermbankColors;
 		$output = "\n/* Mui sinulle. */\n";
-		$fields = array();
+		$fields = [];
 		foreach ( $wgExtraNamespaces as $index => $name ) {
 			$lname = strtolower( $name );
 			$s = ".ns-$index";
-			if ( $index < 1100 || $index % 2 === 1 ) continue;
+			if ( $index < 1100 || $index % 2 === 1 ) {
+				continue;
+			}
 
 			$fields[] = "$s .field-$lname";
-			
+
 			if ( isset( $wgTermbankColors[$name] ) ) {
 				$color = $wgTermbankColors[$name];
 				$output .= <<<CSS
@@ -55,7 +48,6 @@ CSS;
 		$output .= ".areafield { display: none; }\n";
 		# Display working group specific fields per namespace
 		$output .= implode( ",\n", $fields ) . " { display: table-row; }\n";
-		return array( 'all' => $output );
-
+		return [ 'all' => $output ];
 	}
 }

@@ -5,7 +5,7 @@
   1.1.3 Lähikäsite
   1.1.4 Käsitekuva
  1.2 Nimityssivun mallineet
-  
+
 2. Wikin lomakkeet
  2.1 Käsite-lomake
  2.2 Nimitys-lomake
@@ -40,7 +40,7 @@ NIMITYSSIVUT eivät kuulu millekään tieteenalan aihealueelle, vaan ne sijaitse
 Kun aineistoja viedään termipankkiin, niiden sisältämät tiedot pitää jaotella oikeisiin mallinekutsuihin, jotka sijoitellaan oikeille sivuilleen. Esimerkiksi seuraavanlaisen termitaulukon tms. aineiston rivi:
 
 * Aihealue   * termi1    * englanti *  määritelmä                                                         *
-| Kasvitiede | apoplasti | apoplast | kasvisolukon soluvälien ja seinähuokosten muodostama kokonaisuus... | 
+| Kasvitiede | apoplasti | apoplast | kasvisolukon soluvälien ja seinähuokosten muodostama kokonaisuus... |
 
 jaoteltaisiin mallinekutsuihin seuraavasti:
 
@@ -83,7 +83,7 @@ Kokonaisuudessaan käsitemallinekutsu voi näyttää esim. tältä:
 {{Käsite
 |otsikkohuomautus=
 |määritelmä_fi=[[Kasvitiede:kukka|kukan]] [[Kasvitiede:siitoslehti | siitoslehti]], joka tuottaa siemenaiheet
-|selite_fi=Yksinäinen emilehti tai emilehtien erillisyys ei ole vallitseva, vaan emikiehkuran yhteenkasvu emiöksi. Emi tai emiö koostuu [[Kasvitiede:sikiäin|sikiäimestä]], [[Kasvitiede:vartalo|vartalosta]] ja [[Kasvitiede:luotti|luotista]]. 
+|selite_fi=Yksinäinen emilehti tai emilehtien erillisyys ei ole vallitseva, vaan emikiehkuran yhteenkasvu emiöksi. Emi tai emiö koostuu [[Kasvitiede:sikiäin|sikiäimestä]], [[Kasvitiede:vartalo|vartalosta]] ja [[Kasvitiede:luotti|luotista]].
 
 Vrt. [[Kasvitiede: emiö|emiö]].
 |kuvat=
@@ -197,39 +197,13 @@ string
 aineiston/tuonnin alkuperää koskeva huomautus. Tallentuu wikisivulle. Ihan näppärä jos joskus tulevaisuudessa joutuu ihmettelemään, että miksi joillain sivuilla on tiettyä materiaalia.
 
 
-
-
-AddMissingTerms.php
-checkExpList.php
-checkTermCatalog.php
-
-deleteBotlist.php
-tuhoaa listan sisältämät käyttäjät
-
-expImport.php
-
-
-
-exportCategory.php
-Tuo wikistä luokkaan kuuluvat käsitesivut.
-
-exportContent.php
-
-exportPageList.php
-
-
 importNotes.php
 Skripti keltaisten laatikoiden viemiseksi.
-
-importPageList.php
 
 
 import.php
 
 Vanhempi sivujen wikiin viemiseksi käytetty skripti. Syö kolme erillistä csv-taulukkoa, joista kokoaa käsite- ja nimityssivut.
-
-writeStarter.php
-
 
 
 

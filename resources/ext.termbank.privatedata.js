@@ -1,8 +1,12 @@
-jQuery( function( $, undefined ) {
-	var loader = 'Special:PrivateData/' + mw.config.get( 'wgPageName' );
-	var $target = $( ".ttp-privatedata-placeholder" );
+$( function () {
+	var loader, $target;
+
+	loader = 'Special:PrivateData/' + mw.config.get( 'wgPageName' );
+	// eslint-disable-next-line no-jquery/no-global-selector
+	$target = $( '.ttp-privatedata-placeholder' );
+
 	if ( $target.length ) {
-		$.get( mw.util.getUrl( loader ), function( data ) {
+		$.get( mw.util.getUrl( loader ), function ( data ) {
 			$target.html( data );
 		} );
 	}

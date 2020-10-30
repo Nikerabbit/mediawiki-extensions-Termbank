@@ -4,47 +4,44 @@
  *
  * @author Niklas Laxstrom
  * @copyright Copyright © 2011-2012, Niklas Laxström
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
+ * @license GPL-2.0-or-later
  * @file
  */
 
-// Standard boilerplate to define $IP
-if ( getenv( 'MW_INSTALL_PATH' ) !== false ) {
-	$IP = getenv( 'MW_INSTALL_PATH' );
-} else {
-	$dir = dirname( __FILE__ ); $IP = "$dir/../..";
-}
-require_once( "$IP/maintenance/Maintenance.php" );
+use MediaWiki\MediaWikiServices;
+
+$env = getenv( 'MW_INSTALL_PATH' );
+$IP = $env !== false ? $env : __DIR__ . '/../..';
+require_once "$IP/maintenance/Maintenance.php";
 
 const SEPARATOR = '%';
 const NIMIAVARUUS = 'Kielitiede';
 
-const CONCEPT_TEMPLATE		= 'Käsite';
-const EXPRESSION_TEMPLATE	= 'Nimitys';
-const REF_EXPRESSION_TEMPLATE	= 'Liittyvä nimitys';
-const RELATED_CONCEPT_TEMPLATE	= 'Lähikäsite';
-const _REF_EXPRESSION_TEMPLATE	= '_Liittyvä nimitys';
-const _RELATED_CONCEPT_TEMPLATE	= '_Lähikäsite';
+const CONCEPT_TEMPLATE = 'Käsite';
+const EXPRESSION_TEMPLATE = 'Nimitys';
+const REF_EXPRESSION_TEMPLATE = 'Liittyvä nimitys';
+const RELATED_CONCEPT_TEMPLATE = 'Lähikäsite';
+const _REF_EXPRESSION_TEMPLATE = '_Liittyvä nimitys';
+const _RELATED_CONCEPT_TEMPLATE = '_Lähikäsite';
 
 const IMPORTING_USER = "Aineiston tuonti";
 
-const CONCEPT_FIELD	= 'käsite';
-const EXPRESSION_FIELD	= 'nimitys';
+const CONCEPT_FIELD = 'käsite';
+const EXPRESSION_FIELD = 'nimitys';
 
 const SOURCE = 'lähdeaineisto';
 
-const LANGUAGE	  = 'kieli';
+const LANGUAGE = 'kieli';
 const EQUIVALENCE = 'käännösvastaavuus';
-const STATUS      = 'käyttösuositus';
-const ORIGIN      = 'alkuperä';
-const NOTE        = 'käyttöhuomautus';
-const ETYMOLOGY   = 'etymologia';
+const STATUS = 'käyttösuositus';
+const ORIGIN = 'alkuperä';
+const NOTE = 'käyttöhuomautus';
+const ETYMOLOGY = 'etymologia';
 
 const RELATED_CONCEPT = 'lähikäsite';
-const RELATION        = 'käsitesuhde';
+const RELATION = 'käsitesuhde';
 
-class TBImportExternalDatabase extends Maintenance {
-
+class TermbankImport extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->mDescription = '...';
@@ -56,44 +53,26 @@ class TBImportExternalDatabase extends Maintenance {
 	}
 
 	public function execute() {
-
 		$overwrite = $this->getOption( 'overwrite' );
 		$namespace = $this->getOption( 'namespace' );
 		$checked = $this->getOption( 'checked' );
-
 		$source = $this->getOption( 'source' );
-		global $wgContLang;
-		$namespaceId = $wgContLang->getNsIndex( $namespace );
-		
-		if ( $namespaceId == false) {
-				echo "Namespace has no id";
-				die();
-			}
-		
-		if ( $this->getOption( 'checked' ) === 'y' OR $this->getOption( 'checked' ) === 'n') {
-				$checked == $this->getOption( 'checked' );
+
+		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
+		$namespaceId = $contentLanguage->getNsIndex( $namespace );
+
+		if ( $namespaceId === false ) {
+			echo "Namespace has no id";
+			die();
 		}
-		else {
-				echo "Invalid value in checked (y/n)";
-				die();
-		}
-		
-		if ( $this->getOption( 'overwrite' ) === 'y' OR $this->getOption( 'overwrite' ) === 'n') {
-				$overwrite == $this->getOption( 'overwrite' );
-		}
-		else {
-				echo "Invalid value in overwrite (y/n)";
-				die();
-		}	
-		
-		
+
 		$confile = $this->getOption( 'filecode' );
 		$confile .= "_con.csv";
 		$expfile = $this->getOption( 'filecode' );
 		$expfile .= "_exp.csv";
 		$relfile = $this->getOption( 'filecode' );
 		$relfile .= "_rel.csv";
-		
+
 		echo "$confile, $expfile, $relfile";
 
 		$concepts = $this->parseCSV( $confile, 1 );
@@ -105,29 +84,29 @@ class TBImportExternalDatabase extends Maintenance {
 			if ( !$concept ) {
 				continue;
 			}
-			$referring = array(
+			$referring = [
 				EXPRESSION_FIELD => $fields[EXPRESSION_FIELD],
-				LANGUAGE   => $fields[LANGUAGE],
+				LANGUAGE => $fields[LANGUAGE],
 				EQUIVALENCE => $fields[EQUIVALENCE],
 				STATUS => $fields[STATUS],
 				ORIGIN => $fields[ORIGIN],
-				NOTE => $fields[NOTE]
-			);
+				NOTE => $fields[NOTE],
+			];
 
 			$referring = array_filter( $referring );
 			if ( !isset( $concepts[$concept] ) ) {
 				echo "Expression refers to an unidentified concept: $concept\n";
 			}
-			
+
 			$concepts[$concept][_REF_EXPRESSION_TEMPLATE][] = $referring;
 		}
 
 		foreach ( $relations as $fields ) {
 			$subject = $fields[CONCEPT_FIELD];
-			$referring = array(
+			$referring = [
 				CONCEPT_FIELD => $fields[RELATED_CONCEPT],
-				RELATION   => $fields[RELATION],
-			);
+				RELATION => $fields[RELATION],
+			];
 
 			$referring = array_filter( $referring );
 			if ( isset( $concepts[$subject] ) ) {
@@ -145,7 +124,11 @@ class TBImportExternalDatabase extends Maintenance {
 
 		foreach ( $concepts as $i => $concept ) {
 			unset( $concept['-'] );
-			if ( !isset( $concept['lähteet'] ) ) { echo "Apua1\n"; var_dump( $i, $concept ); die(); }
+			if ( !isset( $concept['lähteet'] ) ) {
+				echo "Apua1\n";
+				var_dump( $i, $concept );
+				die();
+			}
 			$lahteet = array_map( 'trim', explode( ',', $concept['lähteet'] ) );
 			$lahteet = array_flip( $lahteet );
 			unset( $lahteet['Väre'] );
@@ -157,7 +140,9 @@ class TBImportExternalDatabase extends Maintenance {
 		}
 
 		foreach ( $concepts as $concept ) {
-			if ( !isset( $concept[CONCEPT_FIELD] ) ) continue;
+			if ( !isset( $concept[CONCEPT_FIELD] ) ) {
+				continue;
+			}
 			$title = Title::makeTitleSafe( $namespaceId, $concept[CONCEPT_FIELD] );
 			if ( !$title ) {
 				echo "Invalid title for $concept[CONCEPT_FIELD]\n";
@@ -168,7 +153,9 @@ class TBImportExternalDatabase extends Maintenance {
 		}
 
 		foreach ( $expressions as $exp ) {
-			if ( !isset( $exp[EXPRESSION_FIELD] ) ) continue;
+			if ( !isset( $exp[EXPRESSION_FIELD] ) ) {
+				continue;
+			}
 			$title = Title::makeTitleSafe( NS_NIMITYS, $exp[EXPRESSION_FIELD] );
 			if ( !$title ) {
 				echo "Invalid title for {$exp['nimitys']}\n";
@@ -186,16 +173,17 @@ class TBImportExternalDatabase extends Maintenance {
 		$headerRow = array_shift( $rows );
 		$headers = str_getcsv( $headerRow, SEPARATOR );
 
-		$output = array();
+		$output = [];
 		foreach ( $rows as $row ) {
 			$values = str_getcsv( $row, SEPARATOR );
 
 			if ( count( $values ) !== count( $headers ) ) {
 				echo "Row length not matching to headers\n";
-				var_dump( $headers, $values ); die();
+				var_dump( $headers, $values );
+				die();
 			}
 
-			if ( is_int($uniq) ) {
+			if ( is_int( $uniq ) ) {
 				$output[$values[$uniq]] = array_combine( $headers, $values );
 			} else {
 				$output[] = array_combine( $headers, $values );
@@ -204,12 +192,23 @@ class TBImportExternalDatabase extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $mainTemplate, $fields, $namespace, $overwrite, $checked ) {
+	protected function insert(
+		Title $title,
+		$mainTemplate,
+		$fields,
+		$namespace,
+		$overwrite,
+		$checked
+	) {
 		$content = "{{" . "$mainTemplate\n";
-		if ( $mainTemplate === CONCEPT_TEMPLATE ) $content .= "|tarkistettu=$checked\n";
-		
+		if ( $mainTemplate === CONCEPT_TEMPLATE ) {
+			$content .= "|tarkistettu=$checked\n";
+		}
+
 		foreach ( $fields as $key => $value ) {
-			if ( $key[0] === '_' ) continue;
+			if ( $key[0] === '_' ) {
+				continue;
+			}
 			$value = preg_replace( '/\[([^\]]+?)\|([^\]]+?)\]/', "[[$namespace:$1|$2]]", $value );
 			$value = preg_replace( '/\[([^|\]]+?)\]/', "[[$namespace:$1|$1]]", $value );
 			$content .= "|$key=$value\n";
@@ -217,11 +216,15 @@ class TBImportExternalDatabase extends Maintenance {
 		$content .= "}}\n";
 
 		foreach ( $fields as $key => $value ) {
-			if ( $key[0] !== '_' ) continue;
+			if ( $key[0] !== '_' ) {
+				continue;
+			}
 			$key = ltrim( $key, '_' );
 			foreach ( $value as $subitem ) {
 				$content .= "{{" . "$key\n";
-				if ($key == 'Liittyvä nimitys' ) $content .= "|otsikossa=Y\n";
+				if ( $key == 'Liittyvä nimitys' ) {
+					$content .= "|otsikossa=Y\n";
+				}
 				foreach ( $subitem as $subkey => $subvalue ) {
 					$content .= "|$subkey=$subvalue\n";
 				}
@@ -232,24 +235,22 @@ class TBImportExternalDatabase extends Maintenance {
 		$user = User::newFromName( IMPORTING_USER, false );
 		$page = new WikiPage( $title );
 		echo "Importing $title";
-		
-		if ($page->exists() == true) {
-		echo " --> Wiki already has page: $title";
-			if ($overwrite == 'y' ) {
+
+		if ( $page->exists() == true ) {
+			echo " --> Wiki already has page: $title";
+			if ( $overwrite == 'y' ) {
 				echo " --> Replacing\n$content\n";
-				$page->doEdit( $content, IMPORTING_USER, 0, false, $user );		
+				$page->doEdit( $content, IMPORTING_USER, 0, false, $user );
 			}
-			if ($overwrite == 'n' ) {
+			if ( $overwrite == 'n' ) {
 				echo " --> Not replaced\n";
 			}
-		}
-		else {
+		} else {
 			echo "-->Saved\n";
-			$page->doEdit( $content, IMPORTING_USER, 0, false, $user );	
-		}	
-}
+			$page->doEdit( $content, IMPORTING_USER, 0, false, $user );
+		}
+	}
 }
 
-$maintClass = 'TBImportExternalDatabase';
-require_once( DO_MAINTENANCE );
-
+$maintClass = TermbankImport::class;
+require_once RUN_MAINTENANCE_IF_MAIN;
