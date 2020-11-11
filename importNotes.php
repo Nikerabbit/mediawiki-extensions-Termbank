@@ -25,7 +25,7 @@ class TermbankImportNotes extends Maintenance {
 
 	public function execute() {
 		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
-		$notes = $this->parseCSV( $this->getOption( 'notes' ), 1 );
+		$notes = $this->parseCSV( $this->getOption( 'notes' ) );
 
 		foreach ( $notes as $i => $fields ) {
 			$käsite = $fields['käsite'];
@@ -54,7 +54,7 @@ class TermbankImportNotes extends Maintenance {
 		}
 	}
 
-	protected function parseCSV( $filename, $uniq = 0 ) {
+	protected function parseCSV( $filename ) {
 		$data = file_get_contents( $filename );
 		$rows = str_getcsv( $data, "\n" );
 
@@ -64,13 +64,13 @@ class TermbankImportNotes extends Maintenance {
 		$output = [];
 
 		foreach ( $rows as $row ) {
-			$outputrow = str_getcsv( $row, "\t" );
-			$rowcount = count( $outputrow );
-			$concept = $outputrow[1];
+			$outputRow = str_getcsv( $row, "\t" );
+			$rowcount = count( $outputRow );
+			$concept = $outputRow[1];
 			if ( $rowcount != 3 ) {
 				echo "$concept\n";
 			}
-			$output[] = array_combine( $headers, $outputrow );
+			$output[] = array_combine( $headers, $outputRow );
 		}
 		return $output;
 	}

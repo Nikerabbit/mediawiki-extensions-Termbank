@@ -44,7 +44,7 @@ class TermbankImportPages extends Maintenance {
 				continue;
 			}
 
-			$this->insert( $title, $content, $namespace, $overwrite, $checked, $extend );
+			$this->insert( $title, $content, $overwrite, $checked, $extend );
 		}
 	}
 
@@ -71,10 +71,7 @@ class TermbankImportPages extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $content, $namespace, $overwrite, $checked, $extend ) {
-		$templateSwitch = "}}{{";
-		$callSwitch = "|";
-
+	protected function insert( Title $title, $content, $overwrite, $checked, $extend ) {
 		$content = preg_replace( '/}}{{/', "}}\n{{", $content );
 		$content = preg_replace( '/\|/', "\n|", $content );
 		$content = preg_replace( '/<putki>/', "|", $content );

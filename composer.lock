@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9420edc009623215dfafc02b5a369ae",
+    "content-hash": "0c1fdea2a9ea02d2745c6288a4c49e97",
     "packages": [
         {
             "name": "composer/installers",
@@ -293,16 +293,16 @@
         },
         {
             "name": "mediawiki/mediawiki-codesniffer",
-            "version": "v32.0.0",
+            "version": "v33.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/mediawiki-tools-codesniffer.git",
-                "reference": "928f07dc942e8e049eaeccf0e8a1d35c5dada984"
+                "reference": "59a258f8dc9330ed51646f13a6635cbd1b390f77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/928f07dc942e8e049eaeccf0e8a1d35c5dada984",
-                "reference": "928f07dc942e8e049eaeccf0e8a1d35c5dada984",
+                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/59a258f8dc9330ed51646f13a6635cbd1b390f77",
+                "reference": "59a258f8dc9330ed51646f13a6635cbd1b390f77",
                 "shasum": ""
             },
             "require": {
@@ -335,7 +335,7 @@
                 "codesniffer",
                 "mediawiki"
             ],
-            "time": "2020-10-26T15:57:52+00:00"
+            "time": "2020-10-30T16:03:08+00:00"
         },
         {
             "name": "mediawiki/minus-x",
