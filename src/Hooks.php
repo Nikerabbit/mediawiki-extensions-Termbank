@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extensions\Termbank;
 
+use ApiBase;
 use DatabaseUpdater;
 use OutputPage;
 use Parser;
@@ -59,5 +60,13 @@ class Hooks {
 ''{{int:ttp-page-concept-wikiname}} {{CURRENTDAY}}.{{CURRENTMONTH}}.{{CURRENTYEAR}}: {{FULLPAGENAME}}.
 ({{int:ttp-page-concept-wikiaddress}}: <nowiki>https://www.tieteentermipankki.fi/wiki/</nowiki>{{FULLPAGENAME}}.)''
 WIKITEXT;
+	}
+
+	public static function onAPIGetAllowedParams( ApiBase $module, array &$params ) {
+		// Termbank has over 50 content namespaces, which breaks the search box
+		if ( $module->getModuleName() === 'opensearch' ) {
+			$params['namespace'][ApiBase::PARAM_ISMULTI_LIMIT1] = ApiBase::LIMIT_BIG1;
+			$params['namespace'][ApiBase::PARAM_ISMULTI_LIMIT2] = ApiBase::LIMIT_BIG1;
+		}
 	}
 }

@@ -7,9 +7,10 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"Hooks": {
-		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\Termbank\\Hooks::onLoadExtensionSchemaUpdates",
-		"LinkBegin": "MediaWiki\\Extensions\\Termbank\\Hooks::onLinkBegin",
+		"APIGetAllowedParams": "MediaWiki\\Extensions\\Termbank\\Hooks::onAPIGetAllowedParams",
 		"BeforePageDisplay": "MediaWiki\\Extensions\\Termbank\\Hooks::onBeforePageDisplay",
+		"LinkBegin": "MediaWiki\\Extensions\\Termbank\\Hooks::onLinkBegin",
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\Termbank\\Hooks::onLoadExtensionSchemaUpdates",
 		"ParserBeforeInternalParse": "MediaWiki\\Extensions\\Termbank\\Hooks::onParserBeforeInternalParse",
 		"OutputPageBodyAttributes": "MediaWiki\\Extensions\\Termbank\\Hooks::onOutputPageBodyAttributes"
 	},
