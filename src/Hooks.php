@@ -32,8 +32,8 @@ class Hooks {
 	}
 
 	public static function onBeforePageDisplay( OutputPage $out ) {
-		$out->addModuleStyles( 'ext.termbank' );
-		$out->addModules( 'ext.termbank.privatedata' );
+		$out->addModuleStyles( 'ext.termbank.styles' );
+		$out->addModules( 'ext.termbank' );
 		$out->addModules( 'ext.termbank.workgroups' );
 	}
 

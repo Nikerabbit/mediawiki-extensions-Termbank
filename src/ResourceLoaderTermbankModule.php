@@ -50,4 +50,9 @@ CSS;
 		$output .= implode( ",\n", $fields ) . " { display: table-row; }\n";
 		return [ 'all' => $output ];
 	}
+
+	/** @inheritDoc */
+	public function getTargets() {
+		return [ 'desktop', 'mobile' ];
+	}
 }

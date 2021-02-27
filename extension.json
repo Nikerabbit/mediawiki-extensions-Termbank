@@ -1,6 +1,6 @@
 {
 	"name": "Termbank",
-	"version": "2020-10-30",
+	"version": "2021-02-27",
 	"author": "Niklas Laxström",
 	"url": "https://tieteentermipankki.fi",
 	"descriptionmsg": "termbank-desc",
@@ -28,24 +28,31 @@
 		"PrivateData": "MediaWiki\\Extensions\\Termbank\\SpecialPrivateData"
 	},
 	"ResourceModules": {
-		"ext.termbank": {
-			"styles": "resources/ext.termbank.css",
+		"ext.termbank.styles": {
+			"styles": [
+				"ext.termbank.less",
+				"ext.termbank.privatedata.css"
+			],
 			"skinStyles": {
-				"vector": "resources/ext.termbank-vector.less"
-			}
+				"vector": "ext.termbank-vector.less"
+			},
+			"targets": [ "desktop", "mobile" ]
 		},
-		"ext.termbank.privatedata": {
-			"styles": "resources/ext.termbank.privatedata.css",
-			"scripts": "resources/ext.termbank.privatedata.js",
-			"dependencies": "mediawiki.util"
+		"ext.termbank": {
+			"scripts": [
+				"ext.termbank.js",
+				"ext.termbank.privatedata.js"
+			],
+			"dependencies": "mediawiki.util",
+			"targets": [ "desktop", "mobile" ]
 		},
 		"ext.termbank.workgroups": {
 			"class": "MediaWiki\\Extensions\\Termbank\\ResourceLoaderTermbankModule"
 		}
 	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteExtPath": "Termbank"
+		"localBasePath": "resources",
+		"remoteExtPath": "Termbank/resources"
 	},
 	"manifest_version": 2
 }

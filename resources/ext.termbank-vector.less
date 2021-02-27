@@ -6,41 +6,53 @@ body {
 	background-repeat: repeat-x;
 
 	&:before {
-		background-image: url( termipankki_tunnus.svg );
+		background: url( termipankki_tunnus.svg ) no-repeat center left;
 		position: absolute;
-		width: 659px;
-		height: 240px;
+		height: 150px;
+		width: 100%;
 		z-index: -10;
 		content: '';
-		background-repeat: no-repeat;
-		background-size: 659px auto;
+		background-size: ~"min(100%,659px) auto";
 	}
 
 	&.page-Toiminnot_Badtitle_dummy_title_for_API_calls_set_in_api_php:before {
 		display: none;
 	}
 
+	/* Let the personal tools go closer to the logo to avoid line wrap */
+	#p-personal ul {
+		padding-left: 0;
+	}
+
 	#mw-page-base {
-		height: 160px;
+		height: 180px;
 		background: none;
 	}
 
 	#mw-head-base {
-		margin-top: -160px;
-		height: 160px;
+		margin-top: -180px;
+		height: 180px;
 	}
 
 	#left-navigation,
 	#right-navigation {
-		margin-top: 120px;
+		margin-top: 140px;
+	}
+
+	/* Depends on wgVectorResponsive = true so that mobile and desktop work the same */
+	@media screen and (max-width: 720px) {
+		#mw-page-base {
+			height: 220px;
+		}
+
+		#mw-head-base {
+			margin-top: -200px;
+			height: 200px;
+		}
 	}
 
 	div#mw-head div.vectorMenu h3 {
 		/* 1px for border */
 		height: 39px;
-	}
-
-	div.vectorTabs ul {
-		font-family: 'Georgia', serif;
 	}
 }
