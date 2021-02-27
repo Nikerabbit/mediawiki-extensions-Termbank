@@ -1,0 +1,25 @@
+.ttp-termpage #firstHeading,
+.ttp-termpage #contentSub,
+body[ class*='page-Termipankki_Etusivu' ] #firstHeading {
+	display: none;
+}
+
+@media screen and (max-width: 720px) {
+	.ttp-responsive-table {
+		/* Force table to not be like tables anymore */
+		table, thead, tbody, th, td, tr {
+			display: block;
+		}
+
+		/* Hide table headers (but not display: none;, for accessibility) */
+		/* SMW puts th inside tbody! */
+		thead tr,
+		th {
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+
+		td:before { content: attr(data-cell-label); }
+	}
+}
