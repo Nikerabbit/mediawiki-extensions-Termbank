@@ -4,6 +4,8 @@ namespace MediaWiki\Extensions\Termbank;
 
 use ApiBase;
 use DatabaseUpdater;
+use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Linker\LinkTarget;
 use OutputPage;
 use Parser;
 use Skin;
@@ -14,8 +16,8 @@ class Hooks {
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
 	}
 
-	public static function onHtmlPageLinkRendererEnd(
-		$linkRenderer, $target, $isKnown, &$text, &$attribs, &$ret
+	public static function onHtmlPageLinkRendererBegin(
+		LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$attribs, &$query, &$ret
 	) {
 		global $wgExtraNamespaces;
 

@@ -9,7 +9,7 @@
 	"Hooks": {
 		"APIGetAllowedParams": "MediaWiki\\Extensions\\Termbank\\Hooks::onAPIGetAllowedParams",
 		"BeforePageDisplay": "MediaWiki\\Extensions\\Termbank\\Hooks::onBeforePageDisplay",
-		"HtmlPageLinkRendererEnd": "MediaWiki\\Extensions\\Termbank\\Hooks::onHtmlPageLinkRendererEnd",
+		"HtmlPageLinkRendererEnd": "MediaWiki\\Extensions\\Termbank\\Hooks::onHtmlPageLinkRendererBegin",
 		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\Termbank\\Hooks::onLoadExtensionSchemaUpdates",
 		"ParserBeforeInternalParse": "MediaWiki\\Extensions\\Termbank\\Hooks::onParserBeforeInternalParse",
 		"OutputPageBodyAttributes": "MediaWiki\\Extensions\\Termbank\\Hooks::onOutputPageBodyAttributes"
