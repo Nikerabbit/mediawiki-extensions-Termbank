@@ -55,4 +55,9 @@ CSS;
 	public function getTargets() {
 		return [ 'desktop', 'mobile' ];
 	}
+
+	/** @inheritDoc */
+	public function getType() {
+		return ResourceLoaderModule::LOAD_STYLES;
+	}
 }

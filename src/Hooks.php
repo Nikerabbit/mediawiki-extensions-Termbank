@@ -19,25 +19,23 @@ class Hooks {
 	) {
 		global $wgExtraNamespaces;
 
-		if ( $query !== [] || $target->isExternal() ) {
+		if ( $query || $target->isExternal() ) {
 			return;
 		}
 
 		$topicPages = array_flip( $wgExtraNamespaces );
 
-		if (
-			$target->getNamespace() >= 1100 ||
-			( $target->inNamespace( NS_MAIN ) && isset( $topicPages[$target->getDBkey()] ) )
-		) {
-			$attribs['class'] = (array)($attribs['class'] ?? []);
-			$attribs['class'][] = 'ns-' . $target->getNamespace();
+		if ( $target->getNamespace() >= 1100 ) {
+			$attribs['class'] .= ' ns-' . $target->getNamespace();
+		} elseif ( $target->inNamespace( NS_MAIN ) && isset( $topicPages[$target->getDBkey()] ) ) {
+			$attribs['class'] .= ' ns-' . $topicPages[$target->getDBkey()];
 		}
 	}
 
 	public static function onBeforePageDisplay( OutputPage $out ) {
 		$out->addModuleStyles( 'ext.termbank.styles' );
 		$out->addModules( 'ext.termbank' );
-		$out->addModules( 'ext.termbank.workgroups' );
+		$out->addModuleStyles( 'ext.termbank.workgroups' );
 	}
 
 	public static function onOutputPageBodyAttributes( OutputPage $out, Skin $skin, &$att ) {
