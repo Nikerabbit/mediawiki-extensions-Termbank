@@ -35,6 +35,7 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 				$color = $wgTermbankColors[$name];
 				$output .= <<<CSS
 a$s,
+a$s:visited,
 body$s h1,
 body$s #firstHeading,
 .page-$name #firstHeading,
