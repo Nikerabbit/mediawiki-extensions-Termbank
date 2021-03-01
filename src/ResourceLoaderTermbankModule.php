@@ -22,6 +22,7 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 		$output = "\n/* Mui sinulle. */\n";
 		$fields = [];
 		foreach ( $wgExtraNamespaces as $index => $name ) {
+			$displayName = strtr( $name, '_', ' ' );
 			$lname = strtolower( $name );
 			$s = ".ns-$index";
 			if ( $index < 1100 || $index % 2 === 1 ) {
@@ -34,12 +35,11 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 				$color = $wgTermbankColors[$name];
 				$output .= <<<CSS
 a$s,
-a[title=$name],
-$s h1,
+body$s h1,
+body$s #firstHeading,
 .page-$name #firstHeading,
-$s #firstHeading { color: $color; }
+.aihealuelista a[title="$displayName"] { color: $color; }
 
-.aihealuelista a[title=$name] { color: $color !important; }
 
 CSS;
 			}

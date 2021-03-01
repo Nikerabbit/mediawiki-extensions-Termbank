@@ -14,21 +14,23 @@ class Hooks {
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
 	}
 
-	public static function onLinkBegin(
-		$dummy,
-		$target,
-		&$html,
-		&$customAttribs,
-		$query,
-		&$options,
-		&$ret
+	public static function onHtmlPageLinkRendererEnd(
+		$linkRenderer, $target, $isKnown, &$text, &$attribs, &$ret
 	) {
-		if ( $target && $target->getNamespace() >= 1100 && count( $query ) === 0 ) {
-			if ( isset( $customAttribs['class'] ) ) {
-				$customAttribs['class'] .= " ns-" . $target->getNamespace();
-			} else {
-				$customAttribs['class'] = " ns-" . $target->getNamespace();
-			}
+		global $wgExtraNamespaces;
+
+		if ( $query !== [] || $target->isExternal() ) {
+			return;
+		}
+
+		$topicPages = array_flip( $wgExtraNamespaces );
+
+		if (
+			$target->getNamespace() >= 1100 ||
+			( $target->inNamespace( NS_MAIN ) && isset( $topicPages[$target->getDBkey()] ) )
+		) {
+			$attribs['class'] = (array)($attribs['class'] ?? []);
+			$attribs['class'][] = 'ns-' . $target->getNamespace();
 		}
 	}
 
