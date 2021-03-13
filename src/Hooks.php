@@ -28,9 +28,9 @@ class Hooks {
 		$topicPages = array_flip( $wgExtraNamespaces );
 
 		if ( $target->getNamespace() >= 1100 ) {
-			$attribs['class'] .= ' ns-' . $target->getNamespace();
+			$attribs['class'] = ( $attribs['class'] ?? '' ) . ' ns-' . $target->getNamespace();
 		} elseif ( $target->inNamespace( NS_MAIN ) && isset( $topicPages[$target->getDBkey()] ) ) {
-			$attribs['class'] .= ' ns-' . $topicPages[$target->getDBkey()];
+			$attribs['class'] = ( $attribs['class'] ?? '' ) .' ns-' . $topicPages[$target->getDBkey()];
 		}
 	}
 
