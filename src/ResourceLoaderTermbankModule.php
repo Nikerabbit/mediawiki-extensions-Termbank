@@ -1,12 +1,5 @@
 <?php
-/**
- * Working groups can have colors and unique fields.
- * Both need some CSS to support the feature.
- *
- * @author Niklas Laxstrom
- * @license GPL-2.0-or-later
- * @file
- */
+declare( strict_types = 1 );
 
 namespace MediaWiki\Extensions\Termbank;
 
@@ -15,14 +8,15 @@ use ResourceLoaderModule;
 
 /**
  * Generates CSS dynamically for defined working groups.
+ * @author Niklas Laxstrom
+ * @license GPL-2.0-or-later
  */
 class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 	public function getStyles( ResourceLoaderContext $context ): array {
-		global $wgExtraNamespaces, $wgTermbankColors;
+		global $wgExtraNamespaces;
 		$output = "\n/* Mui sinulle. */\n";
 		$fields = [];
 		foreach ( $wgExtraNamespaces as $index => $name ) {
-			$displayName = strtr( $name, '_', ' ' );
 			$lname = strtolower( $name );
 			$s = ".ns-$index";
 			if ( $index < 1100 || $index % 2 === 1 ) {
@@ -30,20 +24,6 @@ class ResourceLoaderTermbankModule extends ResourceLoaderModule {
 			}
 
 			$fields[] = "$s .field-$lname";
-
-			if ( isset( $wgTermbankColors[$name] ) ) {
-				$color = $wgTermbankColors[$name];
-				$output .= <<<CSS
-a$s,
-a$s:visited,
-body$s h1,
-body$s #firstHeading,
-.page-$name #firstHeading,
-.aihealuelista a[title="$displayName"] { color: $color; }
-
-
-CSS;
-			}
 		}
 
 		$output .= ".areafield { display: none; }\n";
@@ -53,12 +33,12 @@ CSS;
 	}
 
 	/** @inheritDoc */
-	public function getTargets() {
+	public function getTargets(): array {
 		return [ 'desktop', 'mobile' ];
 	}
 
 	/** @inheritDoc */
-	public function getType() {
+	public function getType(): string {
 		return ResourceLoaderModule::LOAD_STYLES;
 	}
 }

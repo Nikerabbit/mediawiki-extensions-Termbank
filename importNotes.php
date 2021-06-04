@@ -27,7 +27,7 @@ class TermbankImportNotes extends Maintenance {
 		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
 		$notes = $this->parseCSV( $this->getOption( 'notes' ) );
 
-		foreach ( $notes as $i => $fields ) {
+		foreach ( $notes as $fields ) {
 			$käsite = $fields['käsite'];
 			if ( !$käsite ) {
 				continue;
@@ -41,7 +41,7 @@ class TermbankImportNotes extends Maintenance {
 				$note = str_replace( '\n', "\n", $note );
 				$title = Title::makeTitle( $namespaceId, $käsite );
 				if ( !$title ) {
-					echo "EIN1: Invalid title for {$käsite['käsite']}\n";
+					echo "EIN1: Invalid title for {$käsite}\n";
 					continue;
 				} elseif ( !$title->exists() ) {
 					$name = $title->getPrefixedText();
@@ -54,7 +54,7 @@ class TermbankImportNotes extends Maintenance {
 		}
 	}
 
-	protected function parseCSV( $filename ) {
+	protected function parseCSV( $filename ): array {
 		$data = file_get_contents( $filename );
 		$rows = str_getcsv( $data, "\n" );
 
@@ -76,7 +76,7 @@ class TermbankImportNotes extends Maintenance {
 	}
 
 	protected function insert( Title $title, $note ) {
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$fields = [ 'pd_page' => $title->getArticleId(), 'pd_text' => $note ];
 		$dbw->replace( 'privatedata', [ [ 'pd_page' ] ], $fields, __METHOD__ );
 	}

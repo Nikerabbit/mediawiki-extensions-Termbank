@@ -24,7 +24,7 @@ module.exports = function ( grunt ) {
 				'!{vendor,node_modules}/**'
 			]
 		},
-		// eslint-disable-next-line es/no-object-assign
+		// eslint-disable-next-line es/no-object-assign, compat/compat
 		banana: Object.assign( conf.MessagesDirs, {
 			options: {
 				requireLowerCase: 'initial'

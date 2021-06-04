@@ -1,4 +1,5 @@
 <?php
+declare( strict_types = 1 );
 
 namespace MediaWiki\Extensions\Termbank;
 
@@ -27,7 +28,7 @@ class SpecialPrivateData extends SpecialPage {
 		$this->loadBalancer = $services->getDBLoadBalancer();
 	}
 
-	public function isListed() {
+	public function isListed(): bool {
 		return false;
 	}
 

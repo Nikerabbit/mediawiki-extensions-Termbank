@@ -1,37 +1,22 @@
 <?php
+declare( strict_types = 1 );
 
 namespace MediaWiki\Extensions\Termbank;
 
 use ApiBase;
 use DatabaseUpdater;
-use MediaWiki\Linker\LinkRenderer;
-use MediaWiki\Linker\LinkTarget;
 use OutputPage;
 use Parser;
 use Skin;
 
+/**
+ * @author Niklas Laxstrom
+ * @license GPL-2.0-or-later
+ */
 class Hooks {
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
 		$dir = __DIR__;
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
-	}
-
-	public static function onHtmlPageLinkRendererBegin(
-		LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$attribs, &$query, &$ret
-	) {
-		global $wgExtraNamespaces;
-
-		if ( $query || $target->isExternal() ) {
-			return;
-		}
-
-		$topicPages = array_flip( $wgExtraNamespaces );
-
-		if ( $target->getNamespace() >= 1100 ) {
-			$attribs['class'] = ( $attribs['class'] ?? '' ) . ' ns-' . $target->getNamespace();
-		} elseif ( $target->inNamespace( NS_MAIN ) && isset( $topicPages[$target->getDBkey()] ) ) {
-			$attribs['class'] = ( $attribs['class'] ?? '' ) .' ns-' . $topicPages[$target->getDBkey()];
-		}
 	}
 
 	public static function onBeforePageDisplay( OutputPage $out ) {

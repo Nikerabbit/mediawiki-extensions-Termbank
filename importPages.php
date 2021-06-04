@@ -33,9 +33,9 @@ class TermbankImportPages extends Maintenance {
 		$pages = $this->parseCSV( $file );
 
 		foreach ( $pages as $page ) {
-			$namespace = $page['namespace'];
-			$pagename = $page['pagename'];
-			$content = $page['content'];
+			$namespace = $page['namespace'] ?? '';
+			$pagename = $page['pagename'] ?? '';
+			$content = $page['content'] ?? '';
 			$content = UtfNormal\Validator::cleanUp( $content );
 
 			$title = Title::newFromText( UtfNormal\Validator::cleanUp( "$namespace:$pagename" ) );
@@ -49,7 +49,7 @@ class TermbankImportPages extends Maintenance {
 	}
 
 	/** Eats a filename, returns a list of dicts(ns, title, content) */
-	protected function parseCSV( $filename ) {
+	protected function parseCSV( $filename ): array {
 		$data = file_get_contents( $filename );
 		$rows = str_getcsv( $data, "\n" );
 		$output = [];
