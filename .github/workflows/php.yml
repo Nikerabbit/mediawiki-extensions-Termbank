@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -24,7 +25,12 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      uses: php-actions/composer@v6
+      with:
+        php_version: 7.3
 
-    - name: Run test suite
-      run: composer run-script test
+    - name: Run tests
+      uses: php-actions/composer@v6
+      with:
+        php_version: 7.3
+        command: run-script test
