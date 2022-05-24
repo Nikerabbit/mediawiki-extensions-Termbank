@@ -34,7 +34,7 @@
 				"ext.termbank.privatedata.css"
 			],
 			"skinStyles": {
-				"vector": "ext.termbank-vector.less"
+				"vector-2022": "ext.termbank-vector.less"
 			},
 			"targets": [ "desktop", "mobile" ]
 		},
