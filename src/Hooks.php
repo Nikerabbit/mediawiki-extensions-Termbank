@@ -8,6 +8,7 @@ use DatabaseUpdater;
 use OutputPage;
 use Parser;
 use Skin;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * @author Niklas Laxstrom
@@ -52,8 +53,8 @@ WIKITEXT;
 	public static function onAPIGetAllowedParams( ApiBase $module, array &$params ) {
 		// Termbank has over 50 content namespaces, which breaks the search box
 		if ( $module->getModuleName() === 'opensearch' ) {
-			$params['namespace'][ApiBase::PARAM_ISMULTI_LIMIT1] = ApiBase::LIMIT_BIG1;
-			$params['namespace'][ApiBase::PARAM_ISMULTI_LIMIT2] = ApiBase::LIMIT_BIG1;
+			$params['namespace'][ParamValidator::PARAM_ISMULTI_LIMIT1] = ApiBase::LIMIT_BIG1;
+			$params['namespace'][ParamValidator::PARAM_ISMULTI_LIMIT2] = ApiBase::LIMIT_BIG1;
 		}
 	}
 }
