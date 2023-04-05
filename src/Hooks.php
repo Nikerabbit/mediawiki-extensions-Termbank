@@ -43,10 +43,12 @@ class Hooks {
 		}
 
 		$text .= <<<WIKITEXT
+<div class="navigation-not-searchable">
 == Alaviite ==
 {{int:ttp-page-concept-referthispage}}:<br>
 ''{{int:ttp-page-concept-wikiname}} {{CURRENTDAY}}.{{CURRENTMONTH}}.{{CURRENTYEAR}}: {{FULLPAGENAME}}.
 ({{int:ttp-page-concept-wikiaddress}}: <nowiki>https://www.tieteentermipankki.fi/wiki/</nowiki>{{FULLPAGENAME}}.)''
+</div>
 WIKITEXT;
 	}
 
