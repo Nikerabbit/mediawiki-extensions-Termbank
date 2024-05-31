@@ -2,10 +2,12 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -13,23 +15,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Cache vendor
+    - name: Setup PHP
+      id: setup-php
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+
+    - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-php-
+        restore-keys: |
+          ${{ runner.os }}-php-
 
     - name: Install dependencies
-      uses: php-actions/composer@v6
-      with:
-        php_version: 7.4
+      run: composer install --prefer-dist --no-progress
 
-    - name: Run tests
-      uses: php-actions/composer@v6
-      with:
-        php_version: 7.4
-        command: run-script test
+    - name: Run test suite
+      run: composer run-script test
