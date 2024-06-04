@@ -6,7 +6,7 @@
 	const $target = $( '.ttp-privatedata-placeholder' );
 
 	if ( $target.length ) {
-		$.get( mw.util.getUrl( loader ), function ( data ) {
+		$.get( mw.util.getUrl( loader ), ( data ) => {
 			$target.html( data );
 		} );
 	}
