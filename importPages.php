@@ -3,28 +3,30 @@
  * ...
  *
  * @author Antti Kanner
- * @copyright Copyright © 2011-2012, Niklas Laxström
+ * @copyright Copyright © 2011-2024, Niklas Laxström
  * @license GPL-2.0-or-later
  * @file
  */
+
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 $env = getenv( 'MW_INSTALL_PATH' );
 $IP = $env !== false ? $env : __DIR__ . '/../..';
 require_once "$IP/maintenance/Maintenance.php";
 
-const IMPORTING_USER = 'Aineiston tuonti';
-
 class TermbankImportPages extends Maintenance {
+	private const IMPORTING_USER = 'Aineiston tuonti';
+
 	public function __construct() {
 		parent::__construct();
-		$this->mDescription = '...';
 		$this->addOption( 'filecode', '.', true, true );
 		$this->addOption( 'overwrite', '.', true, true );
 		$this->addOption( 'checked', '.', true, true );
 		$this->addOption( 'extend', '.', true, true );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$overwrite = $this->getOption( 'overwrite' );
 		$checked = $this->getOption( 'checked' );
 		$extend = $this->getOption( 'extend' );
@@ -71,7 +73,7 @@ class TermbankImportPages extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $content, $overwrite, $checked, $extend ) {
+	protected function insert( Title $title, $content, $overwrite, $checked, $extend ): void {
 		$content = preg_replace( '/}}{{/', "}}\n{{", $content );
 		$content = preg_replace( '/\|/', "\n|", $content );
 		$content = preg_replace( '/<putki>/', "|", $content );
@@ -83,30 +85,49 @@ class TermbankImportPages extends Maintenance {
 			$content = preg_replace( '/{{Käsite\|/', "{{Käsite|tarkistettu=N|", $content );
 		}
 
-		$user = User::newFromName( IMPORTING_USER, false );
-		$page = new WikiPage( $title );
+		$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+		$userFactory = MediaWikiServices::getInstance()->getUserFactory();
+
+		$user = $userFactory->newFromName( self::IMPORTING_USER );
+		if ( !$user ) {
+			$this->fatalError( "Invalid user name: " . self::IMPORTING_USER );
+		}
+
+		$content = UtfNormal\Validator::cleanUp( $content );
 		$contentObj = ContentHandler::makeContent( $content, $title );
+		$page = $wikiPageFactory->newFromTitle( $title );
+
 		echo "Importing $title";
 
 		if ( $page->exists() ) {
 			echo " --> Wiki already has page: $title\n";
-			if ( $overwrite == 'y' ) {
+			if ( $overwrite === 'y' ) {
 				echo " --> Replacing\n";
 
-				if ( $extend == 'y' ) {
+				if ( $extend === 'y' ) {
 					if ( strlen( $content ) > strlen( $page->getUserText() ) ) {
-						$page->doEditContent( $contentObj, IMPORTING_USER, 0, false, $user );
+						$page->newPageUpdater( $user )
+							->setContent( SlotRecord::MAIN, $contentObj )
+							->saveRevision( CommentStoreComment::newUnsavedComment(
+								self::IMPORTING_USER
+							) );
 					} else {
 						echo "--> not extended";
 					}
 				} else {
-					$page->doEditContent( $contentObj, IMPORTING_USER, 0, false, $user );
+					$page->newPageUpdater( $user )
+						->setContent( SlotRecord::MAIN, $contentObj )
+						->saveRevision( CommentStoreComment::newUnsavedComment(
+							self::IMPORTING_USER
+						) );
 				}
 			}
 			// else: not replaced
 		} else {
 			echo " --> Saved\n";
-			$page->doEditContent( $contentObj, IMPORTING_USER, 0, false, $user );
+			$page->newPageUpdater( $user )
+				->setContent( SlotRecord::MAIN, $contentObj )
+				->saveRevision( CommentStoreComment::newUnsavedComment( self::IMPORTING_USER ) );
 		}
 	}
 }
