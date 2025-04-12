@@ -3,16 +3,16 @@ declare( strict_types = 1 );
 
 namespace MediaWiki\Extensions\Termbank;
 
-use ResourceLoaderContext;
-use ResourceLoaderModule;
+use MediaWiki\ResourceLoader\Context;
+use MediaWiki\ResourceLoader\Module;
 
 /**
  * Generates CSS dynamically for defined working groups.
  * @author Niklas Laxstrom
  * @license GPL-2.0-or-later
  */
-class ResourceLoaderTermbankModule extends ResourceLoaderModule {
-	public function getStyles( ResourceLoaderContext $context ): array {
+class ResourceLoaderTermbankModule extends Module {
+	public function getStyles( Context $context ): array {
 		global $wgExtraNamespaces;
 		$output = "\n/* Mui sinulle. */\n";
 		$fields = [];
