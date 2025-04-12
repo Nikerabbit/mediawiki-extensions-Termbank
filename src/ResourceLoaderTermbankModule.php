@@ -39,6 +39,6 @@ class ResourceLoaderTermbankModule extends Module {
 
 	/** @inheritDoc */
 	public function getType(): string {
-		return ResourceLoaderModule::LOAD_STYLES;
+		return Module::LOAD_STYLES;
 	}
 }

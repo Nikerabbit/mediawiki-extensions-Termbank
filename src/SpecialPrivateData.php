@@ -15,10 +15,8 @@ use Wikimedia\Rdbms\ILoadBalancer;
  * @license GPL-2.0-or-later
  */
 class SpecialPrivateData extends SpecialPage {
-	/** @var PermissionManager */
-	private $permissionManager;
-	/** @var ILoadBalancer */
-	private $loadBalancer;
+	private PermissionManager $permissionManager;
+	private ILoadBalancer $loadBalancer;
 
 	public function __construct() {
 		parent::__construct( 'PrivateData' );
@@ -32,7 +30,7 @@ class SpecialPrivateData extends SpecialPage {
 		return false;
 	}
 
-	public function execute( $parameters ) {
+	public function execute( $parameters ): void {
 		$this->setHeaders();
 
 		if ( $parameters === null ) {
