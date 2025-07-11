@@ -15,8 +15,8 @@ use Wikimedia\Rdbms\ILoadBalancer;
  * @license GPL-2.0-or-later
  */
 class SpecialPrivateData extends SpecialPage {
-	private PermissionManager $permissionManager;
-	private ILoadBalancer $loadBalancer;
+	private readonly PermissionManager $permissionManager;
+	private readonly ILoadBalancer $loadBalancer;
 
 	public function __construct() {
 		parent::__construct( 'PrivateData' );
@@ -26,10 +26,12 @@ class SpecialPrivateData extends SpecialPage {
 		$this->loadBalancer = $services->getDBLoadBalancer();
 	}
 
+	/** @inheritDoc */
 	public function isListed(): bool {
 		return false;
 	}
 
+	/** @inheritDoc */
 	public function execute( $parameters ): void {
 		$this->setHeaders();
 
@@ -68,7 +70,7 @@ class SpecialPrivateData extends SpecialPage {
 		}
 	}
 
-	public static function convertWhiteSpaceToHTML( string $msg ): string {
+	private static function convertWhiteSpaceToHTML( string $msg ): string {
 		$msg = htmlspecialchars( $msg );
 		$msg = preg_replace( '/^ /m', '&#160;', $msg );
 		$msg = preg_replace( '/ $/m', '&#160;', $msg );

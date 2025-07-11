@@ -1,4 +1,8 @@
 <?php
+declare( strict_types = 1 );
+
+namespace MediaWiki\Extensions\Termbank\Maintenance;
+
 /**
  * ...
  *
@@ -8,22 +12,20 @@
  * @file
  */
 
+use Maintenance;
 use MediaWiki\MediaWikiServices;
-
-$env = getenv( 'MW_INSTALL_PATH' );
-$IP = $env !== false ? $env : __DIR__ . '/../..';
-require_once "$IP/maintenance/Maintenance.php";
+use MediaWiki\Title\Title;
 
 const SEPARATOR = '\t';
 
-class TermbankImportNotes extends Maintenance {
+class ImportNotes extends Maintenance {
 	public function __construct() {
 		parent::__construct();
-		$this->mDescription = 'Adds hidden notes only shown to experts';
+		$this->addDescription( 'Adds hidden notes only shown to experts' );
 		$this->addOption( 'notes', 'File containing the notes', true, true );
 	}
 
-	public function execute() {
+	public function execute(): void {
 		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
 		$notes = $this->parseCSV( $this->getOption( 'notes' ) );
 
@@ -54,7 +56,7 @@ class TermbankImportNotes extends Maintenance {
 		}
 	}
 
-	protected function parseCSV( $filename ): array {
+	protected function parseCSV( string $filename ): array {
 		$data = file_get_contents( $filename );
 		$rows = str_getcsv( $data, "\n" );
 
@@ -75,12 +77,19 @@ class TermbankImportNotes extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $note ) {
-		$dbw = wfGetDB( DB_PRIMARY );
+	protected function insert( Title $title, string $note ): void {
+		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
+		$dbw->newReplaceQueryBuilder()
+			->replaceInto( 'privatedata' )
+			->row( [
+				'pd_page' => $title->getArticleId(),
+				'pd_text' => $note
+			] )
+			->uniqueIndexFields( [ 'pd_page' ] )
+			->caller( __METHOD__ )
+			->execute();
+
 		$fields = [ 'pd_page' => $title->getArticleId(), 'pd_text' => $note ];
 		$dbw->replace( 'privatedata', [ [ 'pd_page' ] ], $fields, __METHOD__ );
 	}
 }
-
-$maintClass = TermbankImportNotes::class;
-require_once RUN_MAINTENANCE_IF_MAIN;

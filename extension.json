@@ -1,17 +1,22 @@
 {
 	"name": "Termbank",
-	"version": "2021-06-02",
+	"version": "2025-07-11",
 	"author": "Niklas Laxström",
 	"url": "https://tieteentermipankki.fi",
 	"descriptionmsg": "termbank-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extensions\\Termbank\\Hooks"
+		}
+	},
 	"Hooks": {
-		"APIGetAllowedParams": "MediaWiki\\Extensions\\Termbank\\Hooks::onAPIGetAllowedParams",
-		"BeforePageDisplay": "MediaWiki\\Extensions\\Termbank\\Hooks::onBeforePageDisplay",
-		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\Termbank\\Hooks::onLoadExtensionSchemaUpdates",
-		"ParserBeforeInternalParse": "MediaWiki\\Extensions\\Termbank\\Hooks::onParserBeforeInternalParse",
-		"OutputPageBodyAttributes": "MediaWiki\\Extensions\\Termbank\\Hooks::onOutputPageBodyAttributes"
+		"APIGetAllowedParams": "main",
+		"BeforePageDisplay": "main",
+		"LoadExtensionSchemaUpdates": "main",
+		"ParserBeforeInternalParse": "main",
+		"OutputPageBodyAttributes": "main"
 	},
 	"MessagesDirs": {
 		"Termbank": [

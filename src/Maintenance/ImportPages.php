@@ -1,4 +1,8 @@
 <?php
+declare( strict_types = 1 );
+
+namespace MediaWiki\Extensions\Termbank\Maintenance;
+
 /**
  * ...
  *
@@ -8,14 +12,15 @@
  * @file
  */
 
+use ContentHandler;
+use Maintenance;
+use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Title\Title;
+use UtfNormal\Validator;
 
-$env = getenv( 'MW_INSTALL_PATH' );
-$IP = $env !== false ? $env : __DIR__ . '/../..';
-require_once "$IP/maintenance/Maintenance.php";
-
-class TermbankImportPages extends Maintenance {
+class ImportPages extends Maintenance {
 	private const IMPORTING_USER = 'Aineiston tuonti';
 
 	public function __construct() {
@@ -38,9 +43,9 @@ class TermbankImportPages extends Maintenance {
 			$namespace = $page['namespace'] ?? '';
 			$pagename = $page['pagename'] ?? '';
 			$content = $page['content'] ?? '';
-			$content = UtfNormal\Validator::cleanUp( $content );
+			$content = Validator::cleanUp( $content );
 
-			$title = Title::newFromText( UtfNormal\Validator::cleanUp( "$namespace:$pagename" ) );
+			$title = Title::newFromText( Validator::cleanUp( "$namespace:$pagename" ) );
 			if ( !$title || $title->inNamespace( NS_MAIN ) ) {
 				echo "Invalid title for $pagename\n";
 				continue;
@@ -51,7 +56,7 @@ class TermbankImportPages extends Maintenance {
 	}
 
 	/** Eats a filename, returns a list of dicts(ns, title, content) */
-	protected function parseCSV( $filename ): array {
+	protected function parseCSV( string $filename ): array {
 		$data = file_get_contents( $filename );
 		$rows = str_getcsv( $data, "\n" );
 		$output = [];
@@ -73,7 +78,13 @@ class TermbankImportPages extends Maintenance {
 		return $output;
 	}
 
-	protected function insert( Title $title, $content, $overwrite, $checked, $extend ): void {
+	protected function insert(
+		Title $title,
+		string $content,
+		string $overwrite,
+		string $checked,
+		string $extend,
+	): void {
 		$content = preg_replace( '/}}{{/', "}}\n{{", $content );
 		$content = preg_replace( '/\|/', "\n|", $content );
 		$content = preg_replace( '/<putki>/', "|", $content );
@@ -93,7 +104,7 @@ class TermbankImportPages extends Maintenance {
 			$this->fatalError( "Invalid user name: " . self::IMPORTING_USER );
 		}
 
-		$content = UtfNormal\Validator::cleanUp( $content );
+		$content = Validator::cleanUp( $content );
 		$contentObj = ContentHandler::makeContent( $content, $title );
 		$page = $wikiPageFactory->newFromTitle( $title );
 
@@ -131,6 +142,3 @@ class TermbankImportPages extends Maintenance {
 		}
 	}
 }
-
-$maintClass = TermbankImportPages::class;
-require_once RUN_MAINTENANCE_IF_MAIN;
