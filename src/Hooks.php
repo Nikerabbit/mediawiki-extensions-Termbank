@@ -23,20 +23,20 @@ class Hooks implements
 	ParserBeforeInternalParseHook,
 	APIGetAllowedParamsHook
 {
-	#[Override]
+	/** @inheritDoc */
 	public function onLoadExtensionSchemaUpdates( $updater ): void {
 		$dir = __DIR__;
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
 	}
 
-	#[Override]
+	/** @inheritDoc */
 	public function onBeforePageDisplay( OutputPage $out ): void {
 		$out->addModuleStyles( 'ext.termbank.styles' );
 		$out->addModules( 'ext.termbank' );
 		$out->addModuleStyles( 'ext.termbank.workgroups' );
 	}
 
-	#[Override]
+	/** @inheritDoc */
 	public function onOutputPageBodyAttributes( $out, $skin, &$att ): void {
 		$ns = $out->getTitle()->getNamespace();
 		$action = $out->getRequest()->getText( 'action', 'view' );
@@ -45,7 +45,7 @@ class Hooks implements
 		}
 	}
 
-	#[Override]
+	/** @inheritDoc */
 	public function onParserBeforeInternalParse( $parser, &$text, $stripState ): void {
 		$title = Title::castFromPageReference( $parser->getPage() );
 
@@ -66,7 +66,7 @@ class Hooks implements
 WIKITEXT;
 	}
 
-	#[Override]
+	/** @inheritDoc */
 	public function onAPIGetAllowedParams( $module, &$params, $flags ): void {
 		// Termbank has over 50 content namespaces, which breaks the search box
 		if ( $module->getModuleName() === 'opensearch' ) {
