@@ -11,7 +11,6 @@ use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use MediaWiki\Title\Title;
 use OutputPage;
 use Override;
-use Parser;
 use Wikimedia\ParamValidator\ParamValidator;
 
 /**
