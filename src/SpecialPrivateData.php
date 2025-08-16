@@ -3,11 +3,11 @@ declare( strict_types = 1 );
 
 namespace MediaWiki\Extensions\Termbank;
 
-use Html;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Title\Title;
 use SpecialPage;
-use Title;
 use Wikimedia\Rdbms\ILoadBalancer;
 
 /**
@@ -26,12 +26,12 @@ class SpecialPrivateData extends SpecialPage {
 		$this->loadBalancer = $services->getDBLoadBalancer();
 	}
 
-	/** @inheritDoc */
+	#[Override]
 	public function isListed(): bool {
 		return false;
 	}
 
-	/** @inheritDoc */
+	#[Override]
 	public function execute( $parameters ): void {
 		$this->setHeaders();
 

@@ -5,6 +5,7 @@ namespace MediaWiki\Extensions\Termbank;
 
 use MediaWiki\ResourceLoader\Context;
 use MediaWiki\ResourceLoader\Module;
+use Override;
 
 /**
  * Generates CSS dynamically for defined working groups.
@@ -12,6 +13,7 @@ use MediaWiki\ResourceLoader\Module;
  * @license GPL-2.0-or-later
  */
 class ResourceLoaderTermbankModule extends Module {
+	#[Override]
 	public function getStyles( Context $context ): array {
 		global $wgExtraNamespaces;
 		$output = "\n/* Mui sinulle. */\n";
@@ -32,12 +34,7 @@ class ResourceLoaderTermbankModule extends Module {
 		return [ 'all' => $output ];
 	}
 
-	/** @inheritDoc */
-	public function getTargets(): array {
-		return [ 'desktop', 'mobile' ];
-	}
-
-	/** @inheritDoc */
+	#[Override]
 	public function getType(): string {
 		return Module::LOAD_STYLES;
 	}

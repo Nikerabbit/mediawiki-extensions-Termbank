@@ -21,7 +21,7 @@ use MediaWiki\Title\Title;
 use UtfNormal\Validator;
 
 class ImportPages extends Maintenance {
-	private const IMPORTING_USER = 'Aineiston tuonti';
+	private const string IMPORTING_USER = 'Aineiston tuonti';
 
 	public function __construct() {
 		parent::__construct();

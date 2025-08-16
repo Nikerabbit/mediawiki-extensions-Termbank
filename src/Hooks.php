@@ -10,6 +10,7 @@ use MediaWiki\Hook\ParserBeforeInternalParseHook;
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use MediaWiki\Title\Title;
 use OutputPage;
+use Override;
 use Parser;
 use Wikimedia\ParamValidator\ParamValidator;
 
@@ -23,20 +24,20 @@ class Hooks implements
 	ParserBeforeInternalParseHook,
 	APIGetAllowedParamsHook
 {
-	/** @inheritDoc */
+	#[Override]
 	public function onLoadExtensionSchemaUpdates( $updater ): void {
 		$dir = __DIR__;
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
 	}
 
-	/** @inheritDoc */
+	#[Override]
 	public function onBeforePageDisplay( OutputPage $out ): void {
 		$out->addModuleStyles( 'ext.termbank.styles' );
 		$out->addModules( 'ext.termbank' );
 		$out->addModuleStyles( 'ext.termbank.workgroups' );
 	}
 
-	/** @inheritDoc */
+	#[Override]
 	public function onOutputPageBodyAttributes( $out, $skin, &$att ): void {
 		$ns = $out->getTitle()->getNamespace();
 		$action = $out->getRequest()->getText( 'action', 'view' );
@@ -45,11 +46,7 @@ class Hooks implements
 		}
 	}
 
-	/** @inheritDoc
-	 * @param Parser $parser
-	 * @param string &$text
-	 * @param $stripState
-	 */
+	#[Override]
 	public function onParserBeforeInternalParse( $parser, &$text, $stripState ): void {
 		$title = Title::castFromPageReference( $parser->getPage() );
 
@@ -70,7 +67,7 @@ class Hooks implements
 WIKITEXT;
 	}
 
-	/** @inheritDoc */
+	#[Override]
 	public function onAPIGetAllowedParams( $module, &$params, $flags ): void {
 		// Termbank has over 50 content namespaces, which breaks the search box
 		if ( $module->getModuleName() === 'opensearch' ) {
