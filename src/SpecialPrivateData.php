@@ -6,8 +6,8 @@ namespace MediaWiki\Extensions\Termbank;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
-use SpecialPage;
 use Wikimedia\Rdbms\ILoadBalancer;
 
 /**
