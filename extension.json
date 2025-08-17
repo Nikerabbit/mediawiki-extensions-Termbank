@@ -30,7 +30,13 @@
 		"MediaWiki\\Extensions\\Termbank\\": "src/"
 	},
 	"SpecialPages": {
-		"PrivateData": "MediaWiki\\Extensions\\Termbank\\SpecialPrivateData"
+		"PrivateData": {
+			"class": "MediaWiki\\Extensions\\Termbank\\SpecialPrivateData",
+			"services": [
+				"PermissionManager",
+				"ConnectionProvider"
+			]
+		}
 	},
 	"ResourceModules": {
 		"ext.termbank.styles": {

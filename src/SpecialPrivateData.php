@@ -4,26 +4,22 @@ declare( strict_types = 1 );
 namespace MediaWiki\Extensions\Termbank;
 
 use MediaWiki\Html\Html;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
-use Wikimedia\Rdbms\ILoadBalancer;
+use Override;
+use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
  * @author Niklas Laxström
  * @license GPL-2.0-or-later
  */
 class SpecialPrivateData extends SpecialPage {
-	private readonly PermissionManager $permissionManager;
-	private readonly ILoadBalancer $loadBalancer;
-
-	public function __construct() {
+	public function __construct(
+		private readonly PermissionManager $permissionManager,
+		private readonly IConnectionProvider $connectionProvider,
+	) {
 		parent::__construct( 'PrivateData' );
-
-		$services = MediaWikiServices::getInstance();
-		$this->permissionManager = $services->getPermissionManager();
-		$this->loadBalancer = $services->getDBLoadBalancer();
 	}
 
 	#[Override]
@@ -57,7 +53,7 @@ class SpecialPrivateData extends SpecialPage {
 			return;
 		}
 
-		$db = $this->loadBalancer->getConnectionRef( DB_REPLICA );
+		$db = $this->connectionProvider->getReplicaDatabase();
 		$table = 'privatedata';
 		$fields = 'pd_text';
 		$conds = [ 'pd_page' => $title->getArticleId() ];
@@ -71,12 +67,12 @@ class SpecialPrivateData extends SpecialPage {
 	}
 
 	private static function convertWhiteSpaceToHTML( string $msg ): string {
-		$msg = htmlspecialchars( $msg );
-		$msg = preg_replace( '/^ /m', '&#160;', $msg );
-		$msg = preg_replace( '/ $/m', '&#160;', $msg );
-		$msg = preg_replace( '/ /', '&#160; ', $msg );
-		$msg = str_replace( "\n", '<br />', $msg );
-
-		return $msg;
+		return strtr(
+			htmlspecialchars( $msg ),
+			[
+				' ' => '&#160;',
+				"\n" => '<br />'
+			]
+		);
 	}
 }
