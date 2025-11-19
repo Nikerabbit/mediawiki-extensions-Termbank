@@ -61,18 +61,8 @@ class SpecialPrivateData extends SpecialPage {
 		if ( $res ) {
 			$msg = $this->msg( 'termbank-privatedata-note' )->parse();
 			$text = "<em>$msg</em><hr />";
-			$text .= self::convertWhiteSpaceToHTML( $res->pd_text );
+			$text .= htmlspecialchars( $res->pd_text );
 			echo Html::rawElement( 'div', [ 'class' => 'ttp-privatedata' ], $text );
 		}
-	}
-
-	private static function convertWhiteSpaceToHTML( string $msg ): string {
-		return strtr(
-			htmlspecialchars( $msg ),
-			[
-				' ' => '&#160;',
-				"\n" => '<br />'
-			]
-		);
 	}
 }
