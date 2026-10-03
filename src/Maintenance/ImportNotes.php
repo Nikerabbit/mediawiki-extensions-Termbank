@@ -15,8 +15,7 @@ namespace MediaWiki\Extensions\Termbank\Maintenance;
 use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Title\Title;
-
-const SEPARATOR = '\t';
+use Override;
 
 class ImportNotes extends Maintenance {
 	public function __construct() {
@@ -25,6 +24,7 @@ class ImportNotes extends Maintenance {
 		$this->addOption( 'notes', 'File containing the notes', true, true );
 	}
 
+	#[Override]
 	public function execute(): void {
 		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
 		$notes = $this->parseCSV( $this->getOption( 'notes' ) );
@@ -41,7 +41,7 @@ class ImportNotes extends Maintenance {
 			} else {
 				$note = $fields['teksti'];
 				$note = str_replace( '\n', "\n", $note );
-				$title = Title::makeTitle( $namespaceId, $käsite );
+				$title = Title::makeTitleSafe( $namespaceId, $käsite );
 				if ( !$title ) {
 					echo "EIN1: Invalid title for {$käsite}\n";
 					continue;
@@ -58,19 +58,29 @@ class ImportNotes extends Maintenance {
 
 	protected function parseCSV( string $filename ): array {
 		$data = file_get_contents( $filename );
-		$rows = str_getcsv( $data, "\n" );
+		if ( $data === false || trim( $data ) === '' ) {
+			$this->fatalError( "Cannot read a non-empty import file: $filename" );
+		}
+		$rows = str_getcsv( $data, "\n", '"', "\\" );
 
 		$headerRow = array_shift( $rows );
-		$headers = str_getcsv( $headerRow, "\t" );
+		if ( $headerRow === null ) {
+			$this->fatalError( 'Missing import headers' );
+		}
+		$headers = str_getcsv( $headerRow, "\t", '"', "\\" );
+		if ( count( $headers ) !== 3 || array_diff( [ 'käsite', 'alue', 'teksti' ], $headers ) ) {
+			$this->fatalError( 'Expected headers: käsite, alue, teksti' );
+		}
 
 		$output = [];
 
 		foreach ( $rows as $row ) {
-			$outputRow = str_getcsv( $row, "\t" );
-			$rowcount = count( $outputRow );
-			$concept = $outputRow[1];
-			if ( $rowcount != 3 ) {
-				echo "$concept\n";
+			if ( $row === null || $row === '' ) {
+				continue;
+			}
+			$outputRow = str_getcsv( $row, "\t", '"', "\\" );
+			if ( count( $outputRow ) !== 3 ) {
+				$this->fatalError( 'Expected three fields in each notes row' );
 			}
 			$output[] = array_combine( $headers, $outputRow );
 		}
@@ -78,7 +88,7 @@ class ImportNotes extends Maintenance {
 	}
 
 	protected function insert( Title $title, string $note ): void {
-		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$dbw->newReplaceQueryBuilder()
 			->replaceInto( 'privatedata' )
 			->row( [
@@ -88,8 +98,5 @@ class ImportNotes extends Maintenance {
 			->uniqueIndexFields( [ 'pd_page' ] )
 			->caller( __METHOD__ )
 			->execute();
-
-		$fields = [ 'pd_page' => $title->getArticleId(), 'pd_text' => $note ];
-		$dbw->replace( 'privatedata', [ [ 'pd_page' ] ], $fields, __METHOD__ );
 	}
 }

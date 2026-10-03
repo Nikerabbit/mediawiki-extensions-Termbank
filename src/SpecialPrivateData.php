@@ -54,10 +54,12 @@ class SpecialPrivateData extends SpecialPage {
 		}
 
 		$db = $this->connectionProvider->getReplicaDatabase();
-		$table = 'privatedata';
-		$fields = 'pd_text';
-		$conds = [ 'pd_page' => $title->getArticleId() ];
-		$res = $db->selectRow( $table, $fields, $conds, __METHOD__ );
+		$res = $db->newSelectQueryBuilder()
+			->select( 'pd_text' )
+			->from( 'privatedata' )
+			->where( [ 'pd_page' => $title->getArticleId() ] )
+			->caller( __METHOD__ )
+			->fetchRow();
 		if ( $res ) {
 			$msg = $this->msg( 'termbank-privatedata-note' )->parse();
 			$text = "<em>$msg</em><hr />";

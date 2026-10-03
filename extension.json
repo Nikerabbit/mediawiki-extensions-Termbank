@@ -46,16 +46,14 @@
 			],
 			"skinStyles": {
 				"vector-2022": "ext.termbank-vector.less"
-			},
-			"targets": [ "desktop", "mobile" ]
+			}
 		},
 		"ext.termbank": {
 			"scripts": [
 				"ext.termbank.js",
 				"ext.termbank.privatedata.js"
 			],
-			"dependencies": "mediawiki.util",
-			"targets": [ "desktop", "mobile" ]
+			"dependencies": "mediawiki.util"
 		},
 		"ext.termbank.workgroups": {
 			"class": "MediaWiki\\Extensions\\Termbank\\ResourceLoaderTermbankModule"
@@ -65,5 +63,11 @@
 		"localBasePath": "resources",
 		"remoteExtPath": "Termbank/resources"
 	},
-	"manifest_version": 2
+	"manifest_version": 2,
+	"requires": {
+		"MediaWiki": ">= 1.45.0",
+		"platform": {
+			"php": ">= 8.3.0"
+		}
+	}
 }

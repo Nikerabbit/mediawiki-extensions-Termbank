@@ -18,6 +18,7 @@ use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
+use Override;
 use UtfNormal\Validator;
 
 class ImportPages extends Maintenance {
@@ -31,6 +32,7 @@ class ImportPages extends Maintenance {
 		$this->addOption( 'extend', '.', true, true );
 	}
 
+	#[Override]
 	public function execute(): void {
 		$overwrite = $this->getOption( 'overwrite' );
 		$checked = $this->getOption( 'checked' );
@@ -58,17 +60,21 @@ class ImportPages extends Maintenance {
 	/** Eats a filename, returns a list of dicts(ns, title, content) */
 	protected function parseCSV( string $filename ): array {
 		$data = file_get_contents( $filename );
+		if ( $data === false || trim( $data ) === '' ) {
+			$this->fatalError( "Cannot read a non-empty import file: $filename" );
+		}
 		$rows = str_getcsv( $data, "\n", '"', '\\' );
 		$output = [];
 
 		foreach ( $rows as $row ) {
+			if ( $row === null || $row === '' ) {
+				continue;
+			}
 			$headers = [ "namespace", "pagename", "content" ];
 			$values = str_getcsv( $row, "\t", '"', '\\' );
 
 			if ( count( $values ) !== 3 ) {
-				echo "Row length not matching to headers\n";
-				var_dump( $values );
-				die();
+				$this->fatalError( 'Expected three fields in each pages row' );
 			}
 
 			$output[] = array_combine( $headers, $values );
@@ -116,7 +122,7 @@ class ImportPages extends Maintenance {
 				echo " --> Replacing\n";
 
 				if ( $extend === 'y' ) {
-					if ( strlen( $content ) > strlen( $page->getUserText() ) ) {
+					if ( strlen( $content ) > ( $page->getContent()?->getSize() ?? 0 ) ) {
 						$page->newPageUpdater( $user )
 							->setContent( SlotRecord::MAIN, $contentObj )
 							->saveRevision( CommentStoreComment::newUnsavedComment(
