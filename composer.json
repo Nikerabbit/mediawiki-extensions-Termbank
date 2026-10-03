@@ -3,7 +3,7 @@
 	"type": "mediawiki-extension",
 	"require": {
 		"php": ">=8.3",
-		"composer/installers": ">=1.0.1"
+		"composer/installers": "^1.0.1 || ^2.0"
 	},
 	"require-dev": {
 		"mediawiki/mediawiki-codesniffer": "52.0.1",
@@ -29,6 +29,11 @@
 		"allow-plugins": {
 			"composer/installers": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"platform": {
+			"php": "8.3.0"
 		}
-	}
+	},
+	"description": "Termbank tools for the Finnish terminology wiki",
+	"license": "GPL-2.0-or-later"
 }
