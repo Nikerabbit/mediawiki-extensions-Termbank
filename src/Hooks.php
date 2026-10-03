@@ -26,7 +26,7 @@ class Hooks implements
 {
 	#[Override]
 	public function onLoadExtensionSchemaUpdates( $updater ): void {
-		$dir = __DIR__;
+		$dir = dirname( __DIR__ );
 		$updater->addExtensionUpdate( [ 'addTable', 'privatedata', "$dir/privatedata.sql", true ] );
 	}
 
