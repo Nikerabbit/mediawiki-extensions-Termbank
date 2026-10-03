@@ -104,6 +104,7 @@ jobs:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-php${{ matrix.php }}-mw${{ matrix.mediawiki }}-composer-${{ hashFiles('mediawiki/composer.lock', 'mediawiki/extensions/Termbank/composer.lock') }}
         restore-keys: |
+          ${{ runner.os }}-php${{ matrix.php }}-mw${{ matrix.mediawiki }}-composer-
           ${{ runner.os }}-php${{ matrix.php }}-composer-
           ${{ runner.os }}-composer-
 
