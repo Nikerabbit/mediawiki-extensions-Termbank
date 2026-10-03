@@ -58,12 +58,12 @@ class ImportPages extends Maintenance {
 	/** Eats a filename, returns a list of dicts(ns, title, content) */
 	protected function parseCSV( string $filename ): array {
 		$data = file_get_contents( $filename );
-		$rows = str_getcsv( $data, "\n" );
+		$rows = str_getcsv( $data, "\n", '"', '\\' );
 		$output = [];
 
 		foreach ( $rows as $row ) {
 			$headers = [ "namespace", "pagename", "content" ];
-			$values = str_getcsv( $row, "\t" );
+			$values = str_getcsv( $row, "\t", '"', '\\' );
 
 			if ( count( $values ) !== 3 ) {
 				echo "Row length not matching to headers\n";
