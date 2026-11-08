@@ -34,6 +34,7 @@ class ImportNotes extends Maintenance {
 			if ( !$käsite ) {
 				continue;
 			}
+
 			$namespace = $fields['alue'];
 			$namespaceId = $contentLanguage->getNsIndex( $namespace );
 			if ( $namespaceId === false ) {
@@ -45,13 +46,15 @@ class ImportNotes extends Maintenance {
 				if ( !$title ) {
 					echo "EIN1: Invalid title for {$käsite}\n";
 					continue;
-				} elseif ( !$title->exists() ) {
+				}
+
+				if ( !$title->exists() ) {
 					$name = $title->getPrefixedText();
 					echo "EIN2: Page does not exists: $name\n";
 					continue;
-				} else {
-					$this->insert( $title, $note );
 				}
+
+				$this->insert( $title, $note );
 			}
 		}
 	}
@@ -61,12 +64,14 @@ class ImportNotes extends Maintenance {
 		if ( $data === false || trim( $data ) === '' ) {
 			$this->fatalError( "Cannot read a non-empty import file: $filename" );
 		}
+
 		$rows = str_getcsv( $data, "\n", '"', "\\" );
 
 		$headerRow = array_shift( $rows );
 		if ( $headerRow === null ) {
 			$this->fatalError( 'Missing import headers' );
 		}
+
 		$headers = str_getcsv( $headerRow, "\t", '"', "\\" );
 		if ( count( $headers ) !== 3 || array_diff( [ 'käsite', 'alue', 'teksti' ], $headers ) ) {
 			$this->fatalError( 'Expected headers: käsite, alue, teksti' );
@@ -78,12 +83,15 @@ class ImportNotes extends Maintenance {
 			if ( $row === null || $row === '' ) {
 				continue;
 			}
+
 			$outputRow = str_getcsv( $row, "\t", '"', "\\" );
 			if ( count( $outputRow ) !== 3 ) {
 				$this->fatalError( 'Expected three fields in each notes row' );
 			}
+
 			$output[] = array_combine( $headers, $outputRow );
 		}
+
 		return $output;
 	}
 

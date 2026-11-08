@@ -63,6 +63,7 @@ class ImportPages extends Maintenance {
 		if ( $data === false || trim( $data ) === '' ) {
 			$this->fatalError( "Cannot read a non-empty import file: $filename" );
 		}
+
 		$rows = str_getcsv( $data, "\n", '"', '\\' );
 		$output = [];
 
@@ -70,6 +71,7 @@ class ImportPages extends Maintenance {
 			if ( $row === null || $row === '' ) {
 				continue;
 			}
+
 			$headers = [ "namespace", "pagename", "content" ];
 			$values = str_getcsv( $row, "\t", '"', '\\' );
 
@@ -98,6 +100,7 @@ class ImportPages extends Maintenance {
 		if ( $checked === 'y' ) {
 			$content = preg_replace( '/{{Käsite\|/', "{{Käsite|tarkistettu=y|", $content );
 		}
+
 		if ( $checked === 'n' ) {
 			$content = preg_replace( '/{{Käsite\|/', "{{Käsite|tarkistettu=N|", $content );
 		}
@@ -139,6 +142,7 @@ class ImportPages extends Maintenance {
 						) );
 				}
 			}
+
 			// else: not replaced
 		} else {
 			echo " --> Saved\n";
